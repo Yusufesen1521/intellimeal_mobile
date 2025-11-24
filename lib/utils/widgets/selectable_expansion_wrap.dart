@@ -25,10 +25,12 @@ class SelectableExpansionWrap extends StatefulWidget {
   final bool multiSelect;
 
   @override
-  State<SelectableExpansionWrap> createState() => _SelectableExpansionWrapState();
+  State<SelectableExpansionWrap> createState() =>
+      _SelectableExpansionWrapState();
 }
 
-class _SelectableExpansionWrapState extends State<SelectableExpansionWrap> with SingleTickerProviderStateMixin {
+class _SelectableExpansionWrapState extends State<SelectableExpansionWrap>
+    with SingleTickerProviderStateMixin {
   static const _animationDuration = Duration(milliseconds: 220);
 
   late final Set<String> _selectedValues;
@@ -37,7 +39,9 @@ class _SelectableExpansionWrapState extends State<SelectableExpansionWrap> with 
   @override
   void initState() {
     super.initState();
-    _selectedValues = widget.initialSelectedValues.where(widget.options.contains).toSet();
+    _selectedValues = widget.initialSelectedValues
+        .where(widget.options.contains)
+        .toSet();
   }
 
   void _toggleExpansion() {
@@ -70,17 +74,15 @@ class _SelectableExpansionWrapState extends State<SelectableExpansionWrap> with 
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(20.r);
-    return AnimatedContainer(
-      duration: _animationDuration,
-      curve: Curves.easeInOut,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        border: Border.all(color: AppColors.appBlack),
-        color: AppColors.appWhite,
-      ),
-      child: Column(
-        children: [
-          Material(
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            border: Border.all(color: AppColors.appBlack),
+            color: AppColors.appWhite,
+          ),
+          child: Material(
             color: Colors.transparent,
             borderRadius: borderRadius,
             child: InkWell(
@@ -100,15 +102,11 @@ class _SelectableExpansionWrapState extends State<SelectableExpansionWrap> with 
                         ),
                       ),
                     ),
-                    AnimatedSwitcher(
+                    AnimatedRotation(
+                      turns: _isExpanded ? 0.5 : 0.0,
                       duration: _animationDuration,
-                      transitionBuilder: (child, animation) => RotationTransition(
-                        turns: Tween<double>(begin: 0.8, end: 1.0).animate(animation),
-                        child: FadeTransition(opacity: animation, child: child),
-                      ),
-                      child: Icon(
-                        _isExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
-                        key: ValueKey<bool>(_isExpanded),
+                      child: const Icon(
+                        LucideIcons.chevronDown,
                         color: AppColors.appBlack,
                       ),
                     ),
@@ -117,22 +115,25 @@ class _SelectableExpansionWrapState extends State<SelectableExpansionWrap> with 
               ),
             ),
           ),
-          AnimatedSize(
-            duration: _animationDuration,
-            curve: Curves.easeInOut,
-            child: _isExpanded
-                ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
-                    child: Wrap(
-                      spacing: widget.wrapSpacing ?? 10.w,
-                      runSpacing: widget.wrapRunSpacing ?? 10.h,
-                      children: widget.options.map(_buildSelectableChip).toList(),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
-      ),
+        ),
+        AnimatedSize(
+          duration: _animationDuration,
+          curve: Curves.easeInOut,
+          child: _isExpanded
+              ? Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 2.w,
+                    vertical: 8.h,
+                  ),
+                  child: Wrap(
+                    spacing: widget.wrapSpacing ?? 10.w,
+                    runSpacing: widget.wrapRunSpacing ?? 10.h,
+                    children: widget.options.map(_buildSelectableChip).toList(),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 
