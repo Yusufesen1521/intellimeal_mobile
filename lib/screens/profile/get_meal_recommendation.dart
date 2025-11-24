@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
+import 'package:intellimeal/utils/widgets/selectable_expansion_wrap.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class GetMealRecommendation extends StatefulWidget {
@@ -57,119 +58,18 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
               onChanged: (value) {},
             ),
             SizedBox(height: 20.h),
-            ExpansionTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-                side: BorderSide(color: AppColors.appBlack),
-              ),
-              collapsedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-                side: BorderSide(color: AppColors.appBlack),
-              ),
-              title: Text('Haraket Düzeyi'),
-              trailing: Icon(LucideIcons.chevronDown),
-              childrenPadding: EdgeInsets.symmetric(vertical: 10.h),
-              children: [
-                Wrap(
-                  spacing: 10.w,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Aktif'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Orta'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Düzensiz'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Karışık'),
-                    ),
-                  ],
-                ),
-              ],
+            SelectableExpansionWrap(
+              title: 'Haraket Düzeyi',
+              options: const ['Aktif', 'Orta', 'Düzensiz', 'Karışık'],
+              multiSelect: false,
+              onSelectionChanged: (values) {},
             ),
             SizedBox(height: 20.h),
-            ExpansionTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-                side: BorderSide(color: AppColors.appBlack),
-              ),
-              collapsedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-                side: BorderSide(color: AppColors.appBlack),
-              ),
-              title: Text('Amacınız'),
-              trailing: Icon(LucideIcons.chevronDown),
-              childrenPadding: EdgeInsets.symmetric(vertical: 10.h),
-              children: [
-                Wrap(
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Kilo Vermek'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Kilo Kaybetmek'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Kilo Koruma'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.appWhite,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: AppColors.appBlack),
-                      ),
-                      child: Text('Sağlık'),
-                    ),
-                  ],
-                ),
-              ],
+            SelectableExpansionWrap(
+              title: 'Amacınız',
+              options: const ['Kilo Vermek', 'Kilo Kaybetmek', 'Kilo Koruma', 'Sağlık'],
+              multiSelect: true,
+              onSelectionChanged: (values) {},
             ),
           ],
         ),
