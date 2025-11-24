@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(390, 844),
       minTextAdapt: true,
       builder: (context, child) => MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         routerConfig: router,
       ),
     );

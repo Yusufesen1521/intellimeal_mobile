@@ -108,6 +108,25 @@ class MainScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 20.h),
+                AppButton(
+                  onPressed: () {
+                    context.push('/profile');
+                  },
+                  backgroundColor: AppColors.appGreen,
+                  foregroundColor: AppColors.appWhite,
+                  borderRadius: BorderRadius.circular(20.r),
+                  width: 335.w,
+                  height: 55.h,
+                  child: Text(
+                    'Profile',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.appBlack,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
