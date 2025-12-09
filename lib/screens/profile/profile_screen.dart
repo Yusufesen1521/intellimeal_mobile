@@ -5,36 +5,36 @@ import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Profilim',
-          style: TextStyle(
-            fontSize: 32.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.appBlack,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(LucideIcons.settings),
-          ),
-        ],
-      ),
-      body: Column(
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Profilim',
+                style: TextStyle(
+                  fontSize: 32.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.appBlack,
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(LucideIcons.settings),
+              ),
+            ],
+          ),
+          SizedBox(height: 20.h),
+          // Stats cards
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -143,24 +143,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           SizedBox(height: 20.h),
-          AppButton(
-            onPressed: () {
-              context.push('/profile/get-meal-recommendation');
-            },
-            backgroundColor: AppColors.appGreen,
-            foregroundColor: AppColors.appWhite,
-            borderRadius: BorderRadius.circular(20.r),
-            width: 335.w,
-            height: 50.h,
-            child: Text(
-              'Öğün Önerisi Al',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.appBlack,
+          Center(
+            child: AppButton(
+              onPressed: () {
+                context.push('/profile/get-meal-recommendation');
+              },
+              backgroundColor: AppColors.appGreen,
+              foregroundColor: AppColors.appWhite,
+              borderRadius: BorderRadius.circular(20.r),
+              width: 335.w,
+              height: 50.h,
+              child: Text(
+                'Öğün Önerisi Al',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.appBlack,
+                ),
               ),
             ),
           ),
+          // Add bottom padding for navbar
+          SizedBox(height: 100.h),
         ],
       ),
     );
