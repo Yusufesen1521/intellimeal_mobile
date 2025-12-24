@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intellimeal/controllers/user_controller.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -10,6 +12,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserController controller = UserController();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       child: Column(
@@ -53,20 +56,34 @@ class ProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Kilo',
+                        "Kilo",
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.appBlack,
                         ),
                       ),
-                      Text(
-                        '60 kg',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.appBlack,
-                        ),
+                      Obx(
+                        () {
+                          if (controller.user.personalInfo.isEmpty) {
+                            return Text(
+                              "0 kg",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.appBlack,
+                              ),
+                            );
+                          }
+                          return Text(
+                            "${controller.user.personalInfo.first.weight.toString()} kg",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.appBlack,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -95,7 +112,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '20%',
+                        "20%",
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
@@ -128,13 +145,31 @@ class ProfileScreen extends StatelessWidget {
                           color: AppColors.appBlack,
                         ),
                       ),
-                      Text(
-                        '25',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.appBlack,
-                        ),
+                      Obx(
+                        () {
+                          if (controller.user.personalInfo.isEmpty) {
+                            return Text(
+                              "0",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.appBlack,
+                              ),
+                            );
+                          }
+                          return Text(
+                            calculateBodyFatPercentage(
+                              controller.user.personalInfo.first.weight,
+                              controller.user.personalInfo.first.height
+                                  .toDouble(),
+                            ).toString(),
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.appBlack,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -169,4 +204,8 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+double calculateBodyFatPercentage(double weight, double height) {
+  return weight / (height * height);
 }

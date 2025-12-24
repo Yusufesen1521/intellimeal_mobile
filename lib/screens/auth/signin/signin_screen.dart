@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intellimeal/controllers/user_controller.dart';
+import 'package:intellimeal/local/user_local.dart';
+import 'package:intellimeal/services/auth_service.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
@@ -14,6 +17,9 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
+  final AuthService authService = AuthService();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,10 +49,12 @@ class _SigninScreenState extends State<SigninScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Apptextfield(
-              keyboardType: TextInputType.phone,
-              hintText: 'Telefon Numarası',
-              prefixIcon: LucideIcons.phone,
-              onChanged: (value) {},
+              keyboardType: TextInputType.emailAddress,
+              hintText: 'Email',
+              prefixIcon: LucideIcons.mail,
+              onChanged: (value) {
+                emailController.text = value;
+              },
             ),
             SizedBox(height: 16.h),
             Apptextfield(
@@ -55,14 +63,25 @@ class _SigninScreenState extends State<SigninScreen> {
               hintText: 'Şifre',
               prefixIcon: LucideIcons.lockKeyhole,
               suffixIcon: LucideIcons.eyeClosed,
-              onChanged: (value) {},
+              onChanged: (value) {
+                passwordController.text = value;
+              },
             ),
             SizedBox(height: 16.h),
             AppButton(
-              onPressed: () {
-                context.push('/signup');
+              onPressed: () async {
+                final result = await authService.signIn(
+                  emailController.text,
+                  passwordController.text,
+                );
+
+                if (context.mounted) {
+                  UserController controller = UserController();
+                  controller.setUser(result.user);
+                  context.push('/main');
+                }
               },
-              child: Text('Sign In'),
+              child: Text('Giriş Yap'),
               backgroundColor: AppColors.appBlack,
               foregroundColor: AppColors.appWhite,
               borderRadius: BorderRadius.circular(20.r),

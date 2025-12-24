@@ -5,6 +5,7 @@ import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:intellimeal/services/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -14,6 +15,14 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final AuthService authService = AuthService();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,16 +41,29 @@ class _SignupScreenState extends State<SignupScreen> {
           children: [
             Apptextfield(
               keyboardType: TextInputType.text,
-              hintText: 'Ad Soyad',
+              hintText: 'Ad',
               prefixIcon: LucideIcons.user,
-              onChanged: (value) {},
+              onChanged: (value) {
+                nameController.text = value;
+              },
+            ),
+            SizedBox(height: 16.h),
+            Apptextfield(
+              keyboardType: TextInputType.text,
+              hintText: 'Soyad',
+              prefixIcon: LucideIcons.user,
+              onChanged: (value) {
+                surnameController.text = value;
+              },
             ),
             SizedBox(height: 16.h),
             Apptextfield(
               keyboardType: TextInputType.emailAddress,
               hintText: 'Email',
               prefixIcon: LucideIcons.mail,
-              onChanged: (value) {},
+              onChanged: (value) {
+                emailController.text = value;
+              },
             ),
             SizedBox(height: 16.h),
             Apptextfield(
@@ -49,7 +71,9 @@ class _SignupScreenState extends State<SignupScreen> {
               isPassword: true,
               hintText: 'Şifre',
               prefixIcon: LucideIcons.lockKeyhole,
-              onChanged: (value) {},
+              onChanged: (value) {
+                passwordController.text = value;
+              },
               suffixIcon: LucideIcons.eyeClosed,
             ),
             SizedBox(height: 16.h),
@@ -58,7 +82,9 @@ class _SignupScreenState extends State<SignupScreen> {
               isPassword: true,
               hintText: 'Şifre Tekrar',
               prefixIcon: LucideIcons.lockKeyhole,
-              onChanged: (value) {},
+              onChanged: (value) {
+                confirmPasswordController.text = value;
+              },
               suffixIcon: LucideIcons.eyeClosed,
             ),
             SizedBox(height: 16.h),
@@ -66,52 +92,65 @@ class _SignupScreenState extends State<SignupScreen> {
               keyboardType: TextInputType.phone,
               hintText: 'Telefon Numarası',
               prefixIcon: LucideIcons.phone,
-              onChanged: (value) {},
+              onChanged: (value) {
+                phoneNumberController.text = value;
+              },
             ),
             SizedBox(height: 16.h),
+            // AppButton(
+            //   onPressed: () {},
+            //   backgroundColor: AppColors.appBlack,
+            //   foregroundColor: AppColors.appWhite,
+            //   borderRadius: BorderRadius.circular(20.r),
+            //   width: 295.w,
+            //   height: 50.h,
+            //   child: Text(
+            //     'Kod Gönder',
+            //     style: TextStyle(
+            //       fontSize: 16.sp,
+            //       fontWeight: FontWeight.w500,
+            //       color: AppColors.appWhite,
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 16.h),
+            // Apptextfield(
+            //   keyboardType: TextInputType.text,
+            //   hintText: 'Onay Kodu',
+            //   prefixIcon: LucideIcons.shieldCheck,
+            //   onChanged: (value) {},
+            // ),
+            // SizedBox(
+            //   width: 295.w,
+            //   child: Align(
+            //     alignment: Alignment.centerRight,
+            //     child: TextButton(
+            //       onPressed: () {},
+            //       child: Text(
+            //         textAlign: TextAlign.right,
+            //         'Tekrar Gönder',
+            //         style: TextStyle(
+            //           fontSize: 16.sp,
+            //           fontWeight: FontWeight.w500,
+            //           color: AppColors.appBlack,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             AppButton(
-              onPressed: () {},
-              backgroundColor: AppColors.appBlack,
-              foregroundColor: AppColors.appWhite,
-              borderRadius: BorderRadius.circular(20.r),
-              width: 295.w,
-              height: 50.h,
-              child: Text(
-                'Kod Gönder',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.appWhite,
-                ),
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Apptextfield(
-              keyboardType: TextInputType.text,
-              hintText: 'Onay Kodu',
-              prefixIcon: LucideIcons.shieldCheck,
-              onChanged: (value) {},
-            ),
-            SizedBox(
-              width: 295.w,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    textAlign: TextAlign.right,
-                    'Tekrar Gönder',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.appBlack,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            AppButton(
-              onPressed: () {},
+              onPressed: () {
+                if (passwordController.text == confirmPasswordController.text) {
+                } else {
+                  authService.signUp(
+                    nameController.text,
+                    surnameController.text,
+                    phoneNumberController.text,
+                    emailController.text,
+                    passwordController.text,
+                  );
+                }
+              },
 
               backgroundColor: AppColors.appBlack,
               foregroundColor: AppColors.appWhite,
