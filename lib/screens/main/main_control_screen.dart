@@ -31,6 +31,7 @@ class MainControlScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.appWhite,
       body: SafeArea(
+        bottom: false,
         child: Obx(
           () => IndexedStack(
             index: controller.currentIndex.value,

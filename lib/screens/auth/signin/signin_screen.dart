@@ -78,9 +78,15 @@ class _SigninScreenState extends State<SigninScreen> {
 
                 if (result != null) {
                   if (context.mounted) {
+
                     GetStorage().write('token', result.token);
                     GetStorage().write('userId', result.user!.id);
-                    context.push('/main');
+
+                    if(result.user!.role == 'DOCTOR') {
+                      context.push('/nutritionist/main');
+                    } else {
+                      context.push('/main');
+                    }
                   }
                 } else {
                   if (context.mounted) {

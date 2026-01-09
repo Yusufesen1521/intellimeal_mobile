@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  print(userController.user.value.name);
+                  context.push('/profile/settings');
                 },
                 icon: Icon(LucideIcons.settings),
               ),
@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Obx(
                         () => Text(
-                          "${userController.user.value.personalInfo?.first.weight ?? 0} kg",
+                          "${userController.user.value.personalInfo?.last.weight ?? 0} kg",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
@@ -115,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Obx(
                         () => Text(
-                          "${userController.user.value.personalInfo?.first.armSize ?? 0} %",
+                          "${userController.user.value.personalInfo?.last.armSize ?? 0} %",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Obx(
                         () => Text(
-                          "${calculateBodyFatPercentage(userController.user.value.personalInfo?.first.weight, userController.user.value.personalInfo?.first.height).value.round()}",
+                          "${calculateBodyFatPercentage(userController.user.value.personalInfo?.last.weight, userController.user.value.personalInfo?.last.height).value.round()}",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,

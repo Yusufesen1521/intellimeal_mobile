@@ -4,21 +4,22 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/models/user_model.dart';
 import 'package:intellimeal/services/user_services.dart';
+import 'package:logger/logger.dart';
 
 class UserController extends GetxController {
+  var logger = Logger();
   String token = GetStorage().read('token') ?? '';
   String userId = GetStorage().read('userId') ?? '';
 
   final user = Rx<User>(User());
   final dailyPlanList = Rx<List<DailyPlan>>([]);
 
-  
-
   var selectedDailyPlan = Rx<DailyPlan?>(null);
 
   void getUser() {
     if (userId.isEmpty) return;
     UserService().getUser(userId, token).then((value) {
+      logger.d(value.personalInfo?.last.targetWeight);
       user.value = value;
     });
   }

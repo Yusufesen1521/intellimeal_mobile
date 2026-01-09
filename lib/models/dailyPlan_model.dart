@@ -58,7 +58,7 @@ class DailyPlan {
 
 class DaySummary {
   int? totalCalories;
-  int? totalProteinG;
+  double? totalProteinG;
 
   DaySummary({
     this.totalCalories,

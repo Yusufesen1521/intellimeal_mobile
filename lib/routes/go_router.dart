@@ -1,10 +1,13 @@
 import 'package:go_router/go_router.dart';
+import 'package:intellimeal/nutritionist/screens/nutritionist_main_screen.dart';
 import 'package:intellimeal/screens/auth/signin/signin_screen.dart';
 import 'package:intellimeal/screens/auth/signup/signup_screen.dart';
+import 'package:intellimeal/screens/home/ingredients_screen.dart';
 import 'package:intellimeal/screens/main/main_control_screen.dart';
 import 'package:intellimeal/screens/main/main_screen.dart';
 import 'package:intellimeal/screens/profile/get_meal_recommendation.dart';
 import 'package:intellimeal/screens/profile/personal_info_screen.dart';
+import 'package:intellimeal/screens/profile/profile_settings_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -38,6 +41,23 @@ final router = GoRouter(
           token: extra['token']!,
         );
       },
+    ),
+    GoRoute(
+      path: '/profile/settings',
+      builder: (context, state) => const ProfileSettingsScreen(),
+    ),
+    GoRoute(
+      path: '/home/ingredients',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return IngredientsScreen(
+          initialExpandedMealName: extra?['mealName'] as String?,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/nutritionist/main',
+      builder: (context, state) => const NutritionistMainScreen(),
     ),
   ],
 );
