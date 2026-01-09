@@ -7,12 +7,24 @@ import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  UserController userController = UserController();
+
+  @override
+  void initState() {
+    super.initState();
+    userController.getUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    UserController controller = UserController();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       child: Column(
@@ -31,7 +43,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  print(userController.user.value.name);
+                },
                 icon: Icon(LucideIcons.settings),
               ),
             ],
@@ -62,28 +76,6 @@ class ProfileScreen extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           color: AppColors.appBlack,
                         ),
-                      ),
-                      Obx(
-                        () {
-                          if (controller.user.personalInfo.isEmpty) {
-                            return Text(
-                              "0 kg",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.appBlack,
-                              ),
-                            );
-                          }
-                          return Text(
-                            "${controller.user.personalInfo.first.weight.toString()} kg",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.appBlack,
-                            ),
-                          );
-                        },
                       ),
                     ],
                   ),
@@ -144,32 +136,6 @@ class ProfileScreen extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           color: AppColors.appBlack,
                         ),
-                      ),
-                      Obx(
-                        () {
-                          if (controller.user.personalInfo.isEmpty) {
-                            return Text(
-                              "0",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.appBlack,
-                              ),
-                            );
-                          }
-                          return Text(
-                            calculateBodyFatPercentage(
-                              controller.user.personalInfo.first.weight,
-                              controller.user.personalInfo.first.height
-                                  .toDouble(),
-                            ).toString(),
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.appBlack,
-                            ),
-                          );
-                        },
                       ),
                     ],
                   ),

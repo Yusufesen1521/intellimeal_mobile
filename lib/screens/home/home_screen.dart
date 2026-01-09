@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:intellimeal/controllers/user_controller.dart';
+import 'package:intellimeal/screens/profile/personal_info_screen.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final Map<String, String> chips = {
     'Pzt': '09',
     'Sal': '10',
@@ -24,6 +32,14 @@ class HomeScreen extends StatelessWidget {
     'Yatış Yemeği',
   ];
 
+  UserController userController = UserController();
+
+  @override
+  void initState() {
+    super.initState();
+    userController.getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -33,16 +49,25 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Hoş geldin, \nYusuf',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.appBlack,
-                ),
-              ),
+              Obx(() {
+                return Text(
+                  'Hoş geldin, \n${userController.user.value.name ?? ""}',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.appBlack,
+                  ),
+                );
+              }),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PersonalInfoScreen(),
+                    ),
+                  );
+                },
                 icon: Icon(LucideIcons.bell),
               ),
             ],

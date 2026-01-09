@@ -4,6 +4,7 @@ import 'package:intellimeal/screens/auth/signup/signup_screen.dart';
 import 'package:intellimeal/screens/main/main_control_screen.dart';
 import 'package:intellimeal/screens/main/main_screen.dart';
 import 'package:intellimeal/screens/profile/get_meal_recommendation.dart';
+import 'package:intellimeal/screens/profile/personal_info_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -27,6 +28,10 @@ final router = GoRouter(
     GoRoute(
       path: '/profile/get-meal-recommendation',
       builder: (context, state) => const GetMealRecommendation(),
+    ),
+    GoRoute(
+      path: '/profile/personal-info',
+      builder: (context, state) => const PersonalInfoScreen(),
     ),
   ],
 );

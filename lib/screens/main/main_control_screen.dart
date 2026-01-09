@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intellimeal/screens/chat/chat_screen.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:intellimeal/controllers/main_navigation_controller.dart';
 import 'package:intellimeal/screens/calender/calender_screen.dart';
@@ -22,6 +23,7 @@ class MainControlScreen extends StatelessWidget {
     CalenderScreen(),
     HomeScreen(),
     ProfileScreen(),
+    ChatScreen(),
   ];
 
   @override
@@ -43,7 +45,7 @@ class MainControlScreen extends StatelessWidget {
 
   Widget _buildBottomNavBar() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 80.w, vertical: 20.h),
+      margin: EdgeInsets.symmetric(horizontal: 70.w, vertical: 20.h),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: AppColors.appBlack,
@@ -68,6 +70,10 @@ class MainControlScreen extends StatelessWidget {
             icon: LucideIcons.user,
             index: 3,
           ),
+          _buildNavItem(
+            icon: LucideIcons.messageCircle,
+            index: 4,
+          ),
         ],
       ),
     );
@@ -87,9 +93,7 @@ class MainControlScreen extends StatelessWidget {
         child: Icon(
           icon,
           size: 24.sp,
-          color: isSelected
-              ? AppColors.appWhite
-              : AppColors.appWhite.withValues(alpha: 0.5),
+          color: isSelected ? AppColors.appWhite : AppColors.appWhite.withValues(alpha: 0.5),
         ),
       ),
     );

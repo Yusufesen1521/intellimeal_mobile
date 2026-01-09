@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
@@ -20,8 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController surnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -139,16 +139,26 @@ class _SignupScreenState extends State<SignupScreen> {
             //   ),
             // ),
             AppButton(
-              onPressed: () {
+              onPressed: () async {
                 if (passwordController.text == confirmPasswordController.text) {
-                } else {
-                  authService.signUp(
-                    nameController.text,
-                    surnameController.text,
-                    phoneNumberController.text,
-                    emailController.text,
-                    passwordController.text,
-                  );
+                  SnackBar(content: Text('Şifreler uyuşmuyor'));
+                  return;
+                }
+                final result = await authService.signUp(
+                  nameController.text,
+                  surnameController.text,
+                  phoneNumberController.text,
+                  emailController.text,
+                  passwordController.text,
+                );
+                if (context.mounted) {
+                  if (result != null) {
+                    GetStorage().write('token', result.token);
+                    GetStorage().write('userId', result.user!.id);
+                    context.go('/profile/personal-info');
+                  } else {
+                    SnackBar(content: Text('Kayıt başarısız'));
+                  }
                 }
               },
 

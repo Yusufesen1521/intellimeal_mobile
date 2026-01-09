@@ -81,7 +81,7 @@ class MainScreen extends StatelessWidget {
                   width: 335.w,
                   height: 55.h,
                   child: Text(
-                    'Sign In',
+                    'Giriş Yap',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -100,26 +100,7 @@ class MainScreen extends StatelessWidget {
                   width: 335.w,
                   height: 55.h,
                   child: Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.appBlack,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                AppButton(
-                  onPressed: () {
-                    context.push('/profile');
-                  },
-                  backgroundColor: AppColors.appGreen,
-                  foregroundColor: AppColors.appWhite,
-                  borderRadius: BorderRadius.circular(20.r),
-                  width: 335.w,
-                  height: 55.h,
-                  child: Text(
-                    'Profile',
+                    'Kayıt Ol',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,

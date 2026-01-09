@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/controllers/user_controller.dart';
 import 'package:intellimeal/local/user_local.dart';
@@ -76,8 +77,8 @@ class _SigninScreenState extends State<SigninScreen> {
                 );
 
                 if (context.mounted) {
-                  UserController controller = UserController();
-                  controller.setUser(result.user);
+                  GetStorage().write('token', result.token);
+                  GetStorage().write('userId', result.user!.id);
                   context.push('/main');
                 }
               },

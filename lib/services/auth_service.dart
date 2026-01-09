@@ -24,7 +24,7 @@ class AuthService {
     }
   }
 
-  Future<UserModel> signUp(
+  Future<UserModel?> signUp(
     String name,
     String surname,
     String phoneNumber,
@@ -43,11 +43,11 @@ class AuthService {
         },
       );
       if (response.statusCode != 200) {
-        throw Exception('Failed to sign up');
+        return null;
       }
       return UserModel.fromJson(response.data);
     } catch (e) {
-      rethrow;
+      return null;
     }
   }
 }

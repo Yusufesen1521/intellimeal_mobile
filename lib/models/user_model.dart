@@ -9,44 +9,48 @@ UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
-  final String token;
-  final User user;
+  String? token;
+  User? user;
 
   UserModel({
-    required this.token,
-    required this.user,
+    this.token,
+    this.user,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     token: json["token"],
-    user: User.fromJson(json["user"]),
+    user: json["user"] == null ? null : User.fromJson(json["user"]),
   );
 
   Map<String, dynamic> toJson() => {
     "token": token,
-    "user": user.toJson(),
+    "user": user?.toJson(),
   };
 }
 
 class User {
-  final String id;
-  final String name;
-  final String surname;
-  final String phoneNumber;
-  final String email;
-  final dynamic password;
-  final String role;
-  final List<PersonalInfo> personalInfo;
+  String? id;
+  String? name;
+  String? surname;
+  String? phoneNumber;
+  String? email;
+  dynamic password;
+  String? role;
+  bool? verified;
+  int? isReceived;
+  List<PersonalInfo>? personalInfo;
 
   User({
-    required this.id,
-    required this.name,
-    required this.surname,
-    required this.phoneNumber,
-    required this.email,
-    required this.password,
-    required this.role,
-    required this.personalInfo,
+    this.id,
+    this.name,
+    this.surname,
+    this.phoneNumber,
+    this.email,
+    this.password,
+    this.role,
+    this.verified,
+    this.isReceived,
+    this.personalInfo,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -57,9 +61,9 @@ class User {
     email: json["email"],
     password: json["password"],
     role: json["role"],
-    personalInfo: List<PersonalInfo>.from(
-      json["personalInfo"].map((x) => PersonalInfo.fromJson(x)),
-    ),
+    verified: json["verified"],
+    isReceived: json["isReceived"],
+    personalInfo: json["personalInfo"] == null ? [] : List<PersonalInfo>.from(json["personalInfo"]!.map((x) => PersonalInfo.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -70,55 +74,60 @@ class User {
     "email": email,
     "password": password,
     "role": role,
-    "personalInfo": List<dynamic>.from(personalInfo.map((x) => x.toJson())),
+    "verified": verified,
+    "isReceived": isReceived,
+    "personalInfo": personalInfo == null ? [] : List<dynamic>.from(personalInfo!.map((x) => x.toJson())),
   };
 }
 
 class PersonalInfo {
-  final String id;
-  final String userId;
-  final DateTime date;
-  final int age;
-  final double weight;
-  final int height;
-  final String gender;
-  final String activityLevel;
-  final String dietaryPreference;
-  final String goal;
-  final String healthCondition;
-  final int neckSize;
-  final int waistSize;
-  final int hipSize;
-  final int chestSize;
-  final int armSize;
-  final int legSize;
+  String? id;
+  String? userId;
+  DateTime? date;
+  int? age;
+  double? weight;
+  double? targetWeight;
+  int? height;
+  String? gender;
+  String? activityLevel;
+  String? dietaryPreference;
+  String? goal;
+  String? healthCondition;
+  int? neckSize;
+  int? waistSize;
+  int? hipSize;
+  int? chestSize;
+  int? armSize;
+  int? legSize;
 
   PersonalInfo({
-    required this.id,
-    required this.userId,
-    required this.date,
-    required this.age,
-    required this.weight,
-    required this.height,
-    required this.gender,
-    required this.activityLevel,
-    required this.dietaryPreference,
-    required this.goal,
-    required this.healthCondition,
-    required this.neckSize,
-    required this.waistSize,
-    required this.hipSize,
-    required this.chestSize,
-    required this.armSize,
-    required this.legSize,
+    this.id,
+    this.userId,
+    this.date,
+    this.age,
+    this.weight,
+    this.targetWeight,
+    this.height,
+    this.gender,
+    this.activityLevel,
+    this.dietaryPreference,
+    this.goal,
+    this.healthCondition,
+    this.neckSize,
+    this.waistSize,
+    this.hipSize,
+    this.chestSize,
+    this.armSize,
+    this.legSize,
   });
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
     id: json["id"],
     userId: json["userId"],
-    date: DateTime.parse(json["date"]),
+    date: json["date"] == null ? null : DateTime.parse(json["date"]),
     age: json["age"],
     weight: json["weight"]?.toDouble(),
+    targetWeight: json["targetWeight"]?.toDouble(),
     height: json["height"],
     gender: json["gender"],
     activityLevel: json["activityLevel"],
@@ -136,9 +145,10 @@ class PersonalInfo {
   Map<String, dynamic> toJson() => {
     "id": id,
     "userId": userId,
-    "date": date.toIso8601String(),
+    "date": date?.toIso8601String(),
     "age": age,
     "weight": weight,
+    "targetWeight": targetWeight,
     "height": height,
     "gender": gender,
     "activityLevel": activityLevel,
