@@ -153,26 +153,43 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
                               .updatePersonalInfo(
                                 userController.user.value.id!,
                                 userController.token,
-                                userController.user.value.personalInfo!.first.id!,
-                                userController.user.value.personalInfo!.first.age!.toString(),
-                                userController.user.value.personalInfo!.first.weight!.toString(),
+                                userController.user.value.personalInfo!.last.id!,
+                                userController.user.value.personalInfo!.last.age!.toString(),
+                                userController.user.value.personalInfo!.last.weight!.toString(),
                                 _goalWeightController.text,
-                                userController.user.value.personalInfo!.first.height!.toString(),
-                                userController.user.value.personalInfo!.first.gender!.toString(),
+                                userController.user.value.personalInfo!.last.height!.toString(),
+                                userController.user.value.personalInfo!.last.gender!.toString(),
                                 _activityLevel.isNotEmpty ? _activityLevel.first : '',
                                 _eatingHabits.join(','),
                                 _goals.isNotEmpty ? _goals.first : '',
                                 _diseases.join(','),
-                                userController.user.value.personalInfo!.first.neckSize!.toString(),
-                                userController.user.value.personalInfo!.first.waistSize!.toString(),
-                                userController.user.value.personalInfo!.first.hipSize!.toString(),
-                                userController.user.value.personalInfo!.first.chestSize!.toString(),
-                                userController.user.value.personalInfo!.first.armSize!.toString(),
-                                userController.user.value.personalInfo!.first.legSize!.toString(),
+                                userController.user.value.personalInfo!.last.neckSize!.toString(),
+                                userController.user.value.personalInfo!.last.waistSize!.toString(),
+                                userController.user.value.personalInfo!.last.hipSize!.toString(),
+                                userController.user.value.personalInfo!.last.chestSize!.toString(),
+                                userController.user.value.personalInfo!.last.armSize!.toString(),
+                                userController.user.value.personalInfo!.last.legSize!.toString(),
                               )
                               .then((value) {
                                 if (value) {
-                                  _isLoading.value = false;
+                                  UserService()
+                                      .getMealRecommendation(
+                                        userController.user.value.id!,
+                                        userController.token,
+                                      )
+                                      .then((value) {
+                                        if (value.dailyPlans!.isNotEmpty) {
+                                          userController.dailyPlanList.value = value.dailyPlans!;
+                                          _isLoading.value = false;
+                                          context.go('/main');
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Öğün önerisi alınamadı')),
+                                          );
+                                          print(value);
+                                          _isLoading.value = false;
+                                        }
+                                      });
                                 }
                               });
                         },

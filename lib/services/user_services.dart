@@ -45,7 +45,7 @@ class UserService {
     }
   }
 
-  Future<bool> getMealRecommendation(String id, String token) async {
+  Future<DailyPlanModel> getMealRecommendation(String id, String token) async {
     try {
       final response = await _dio.post(
         AppUrls.getMealRecommendationUrl(id),
@@ -55,10 +55,10 @@ class UserService {
           },
         ),
       );
-      if (response.statusCode != 200) {
+      if (response.statusCode != 201) {
         throw Exception('Failed to get meal recommendation');
       }
-      return true;
+      return DailyPlanModel.fromJson(response.data);
     } catch (e) {
       rethrow;
     }

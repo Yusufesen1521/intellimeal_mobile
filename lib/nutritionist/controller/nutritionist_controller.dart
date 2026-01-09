@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:intellimeal/models/all_users_model.dart';
+import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/services/nutritionist_service.dart';
 import 'package:logger/logger.dart';
 
@@ -65,5 +66,26 @@ class NutritionistController extends GetxController {
     if (searchQuery.value.isNotEmpty) {
       searchPatients(searchQuery.value);
     }
+  }
+
+  /// Hasta günlük planlarını getir
+  Future<List<DailyPlan>> getPatientDailyPlans(String patientId) async {
+    try {
+      final data = await _nutritionistService.getPatientDailyPlans(patientId);
+      if (data != null) {
+        final dailyPlanModel = DailyPlanModel.fromJson(data);
+        return dailyPlanModel.dailyPlans ?? [];
+      }
+      return [];
+    } catch (e) {
+      logger.e('Hasta planları yüklenirken hata: $e');
+      return [];
+    }
+  }
+
+  /// Plan onaylama - TODO: API bağlantısı eklenecek
+  Future<bool> approvePlan(String patientId) async {
+    // TODO: Backend API'si hazır olduğunda implementasyon yapılacak
+    return await _nutritionistService.approvePlan(patientId);
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intellimeal/models/all_users_model.dart';
 import 'package:intellimeal/nutritionist/controller/nutritionist_controller.dart';
+import 'package:intellimeal/nutritionist/screens/patient_options_dialog.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -218,7 +219,7 @@ class _NutritionistMainScreenState extends State<NutritionistMainScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(20.r),
           onTap: () {
-            // TODO: Hasta detay sayfasına git
+            PatientOptionsDialog.show(context, patient);
           },
           child: Padding(
             padding: EdgeInsets.all(16.w),

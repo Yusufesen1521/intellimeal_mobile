@@ -5,8 +5,6 @@ class DioInstance {
   static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: AppUrls.baseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
     ),
   );
 

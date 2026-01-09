@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:intellimeal/controllers/user_controller.dart';
+import 'package:intellimeal/screens/home/empty_screen.dart';
 import 'package:intellimeal/screens/home/ingredients_screen.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
@@ -129,528 +130,532 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Obx(() {
-                return Text(
-                  'Hoş geldin, \n${userController.user.value.name ?? ""}',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.appBlack,
-                  ),
-                );
-              }),
-              IconButton(
-                onPressed: () {
-                  userController.getUser();
-                },
-                icon: Icon(LucideIcons.bell),
-              ),
-            ],
-          ),
-          SizedBox(height: 20.h),
-          Obx(() {
-            final bool isChecked = userController.dailyPlanList.value.first.checked!;
-            if (isChecked) {
-              return SizedBox.shrink();
-            } else {
-              return Column(
+    return Obx(
+      () => userController.dailyPlanList.value.isEmpty
+          ? EmptyScreen()
+          : SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Plan Onay"),
-                            content: Text(
-                              "Bu Plan Yapay Zeka Tarafından Oluşturulmuştur! Lütfen bu beslenme programını uygulamak için diyetisyeninizden onay bekleyiniz.",
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Tamam"),
-                              ),
-                            ],
-                          );
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Obx(() {
+                        return Text(
+                          'Hoş geldin, \n${userController.user.value.name ?? ""}',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.appBlack,
+                          ),
+                        );
+                      }),
+                      IconButton(
+                        onPressed: () {
+                          userController.getUser();
                         },
-                      );
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 50.h,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColors.appRed,
-                        borderRadius: BorderRadius.circular(12.r),
+                        icon: Icon(LucideIcons.bell),
                       ),
-                      child: Text(
-                        "Planınız Diyetisyeniniz Tarafından Onaylanmamıştır!",
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.appWhite,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 10.h),
-                ],
-              );
-            }
-          }),
-          Obx(() {
-            final plans = userController.dailyPlanList.value;
-            if (plans.isEmpty) {
-              return SizedBox.shrink();
-            }
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: plans.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final plan = entry.value;
-                  final date = plan.date;
-                  final dayName = _getDayName(date?.weekday);
-                  final dayNumber = date?.day.toString().padLeft(2, '0') ?? '';
-                  final isSelected = index == selectedDayIndex;
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedDayIndex = index;
-                        selectedMealIndex = 0; // Gün değiştiğinde ilk öğünü seç
-                      });
-                      userController.setSelectedDailyPlan(index);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 12.h,
-                      ),
-                      margin: EdgeInsets.only(right: 16.w),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.r),
-                        color: isSelected ? AppColors.appBlack : AppColors.appWhite,
-                        border: Border.all(
-                          color: AppColors.appBlack,
-                        ),
-                      ),
-                      child: Column(
+                  SizedBox(height: 20.h),
+                  Obx(() {
+                    final bool isChecked = userController.dailyPlanList.value.first.checked!;
+                    if (isChecked) {
+                      return SizedBox.shrink();
+                    } else {
+                      return Column(
                         children: [
-                          Text(
-                            dayName,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: isSelected ? AppColors.appWhite : AppColors.appBlack,
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Plan Onay"),
+                                    content: Text(
+                                      "Bu Plan Yapay Zeka Tarafından Oluşturulmuştur! Lütfen bu beslenme programını uygulamak için diyetisyeninizden onay bekleyiniz.",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("Tamam"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColors.appRed,
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Text(
+                                "Planınız Diyetisyeniniz Tarafından Onaylanmamıştır!",
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.appWhite,
+                                ),
+                              ),
                             ),
                           ),
-                          Text(
-                            dayNumber,
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              color: isSelected ? AppColors.appWhite : AppColors.appBlack,
-                            ),
-                          ),
+                          SizedBox(height: 10.h),
                         ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            );
-          }),
-          SizedBox(height: 20.h),
-          Obx(() {
-            final plans = userController.dailyPlanList.value;
-            if (plans.isEmpty || selectedDayIndex >= plans.length) {
-              return SizedBox.shrink();
-            }
-            final selectedPlan = plans[selectedDayIndex];
-            final mealsList = selectedPlan.meals ?? [];
-            final selectedMeal = mealsList.isNotEmpty && selectedMealIndex < mealsList.length ? mealsList[selectedMealIndex] : null;
-
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
-                color: AppColors.appWhite,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.appBlack.withValues(alpha: 0.1),
-                    blurRadius: 10.r,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Öğün çipleri
-                    SingleChildScrollView(
+                      );
+                    }
+                  }),
+                  Obx(() {
+                    final plans = userController.dailyPlanList.value;
+                    if (plans.isEmpty) {
+                      return SizedBox.shrink();
+                    }
+                    return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: mealsList.asMap().entries.map((entry) {
+                        children: plans.asMap().entries.map((entry) {
                           final index = entry.key;
-                          final meal = entry.value;
-                          final isSelected = index == selectedMealIndex;
+                          final plan = entry.value;
+                          final date = plan.date;
+                          final dayName = _getDayName(date?.weekday);
+                          final dayNumber = date?.day.toString().padLeft(2, '0') ?? '';
+                          final isSelected = index == selectedDayIndex;
 
                           return GestureDetector(
                             onTap: () {
                               setState(() {
-                                selectedMealIndex = index;
+                                selectedDayIndex = index;
+                                selectedMealIndex = 0; // Gün değiştiğinde ilk öğünü seç
                               });
+                              userController.setSelectedDailyPlan(index);
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: 8.h,
+                                horizontal: 16.w,
+                                vertical: 12.h,
                               ),
-                              margin: EdgeInsets.only(right: 12.w),
+                              margin: EdgeInsets.only(right: 16.w),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20.r),
                                 color: isSelected ? AppColors.appBlack : AppColors.appWhite,
                                 border: Border.all(
-                                  color: isSelected ? AppColors.appBlack : AppColors.appBlack,
+                                  color: AppColors.appBlack,
                                 ),
                               ),
-                              child: Text(
-                                _getMealTypeName(meal.mealType),
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                  color: isSelected ? AppColors.appWhite : AppColors.appBlack,
-                                ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    dayName,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: isSelected ? AppColors.appWhite : AppColors.appBlack,
+                                    ),
+                                  ),
+                                  Text(
+                                    dayNumber,
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: isSelected ? AppColors.appWhite : AppColors.appBlack,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );
                         }).toList(),
                       ),
-                    ),
-                    SizedBox(height: 16.h),
-                    // Seçili öğünün yemeği
-                    if (selectedMeal != null) ...[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => IngredientsScreen(
-                                initialExpandedMealName: selectedMeal.mealName,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.r),
-                            color: AppColors.appPurple.withValues(alpha: 0.1),
-                            border: Border.all(
-                              color: AppColors.appPurple.withValues(alpha: 0.3),
-                            ),
+                    );
+                  }),
+                  SizedBox(height: 20.h),
+                  Obx(() {
+                    final plans = userController.dailyPlanList.value;
+                    if (plans.isEmpty || selectedDayIndex >= plans.length) {
+                      return SizedBox.shrink();
+                    }
+                    final selectedPlan = plans[selectedDayIndex];
+                    final mealsList = selectedPlan.meals ?? [];
+                    final selectedMeal = mealsList.isNotEmpty && selectedMealIndex < mealsList.length ? mealsList[selectedMealIndex] : null;
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: AppColors.appWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.appBlack.withValues(alpha: 0.1),
+                            blurRadius: 10.r,
+                            offset: Offset(0, 5),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 12.w,
-                                    height: 12.h,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppColors.appPurple,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Expanded(
-                                    child: Text(
-                                      selectedMeal.mealName ?? '',
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.appBlack,
+                        ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Öğün çipleri
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: mealsList.asMap().entries.map((entry) {
+                                  final index = entry.key;
+                                  final meal = entry.value;
+                                  final isSelected = index == selectedMealIndex;
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedMealIndex = index;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12.w,
+                                        vertical: 8.h,
                                       ),
-                                    ),
-                                  ),
-                                  Icon(
-                                    LucideIcons.chevronRight,
-                                    size: 20.sp,
-                                    color: AppColors.appBlack.withValues(alpha: 0.5),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 12.h),
-                              Row(
-                                children: [
-                                  _buildNutritionBadge(
-                                    '${selectedMeal.totalCalories ?? 0} kcal',
-                                    LucideIcons.flame,
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  _buildNutritionBadge(
-                                    '${selectedMeal.totalProteinG ?? 0}g protein',
-                                    LucideIcons.beef,
-                                  ),
-                                ],
-                              ),
-                              if (selectedMeal.healthBenefitNote != null && selectedMeal.healthBenefitNote!.isNotEmpty) ...[
-                                SizedBox(height: 12.h),
-                                Container(
-                                  padding: EdgeInsets.all(12.w),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    color: AppColors.appWhite,
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        LucideIcons.heartPulse,
-                                        size: 16.sp,
-                                        color: AppColors.appPurple,
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Expanded(
-                                        child: Text(
-                                          selectedMeal.healthBenefitNote!,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400,
-                                            color: AppColors.appBlack.withValues(alpha: 0.7),
-                                            height: 1.4,
-                                          ),
+                                      margin: EdgeInsets.only(right: 12.w),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20.r),
+                                        color: isSelected ? AppColors.appBlack : AppColors.appWhite,
+                                        border: Border.all(
+                                          color: isSelected ? AppColors.appBlack : AppColors.appBlack,
                                         ),
                                       ),
+                                      child: Text(
+                                        _getMealTypeName(meal.mealType),
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                          color: isSelected ? AppColors.appWhite : AppColors.appBlack,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
+                            // Seçili öğünün yemeği
+                            if (selectedMeal != null) ...[
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => IngredientsScreen(
+                                        initialExpandedMealName: selectedMeal.mealName,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(16.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.r),
+                                    color: AppColors.appPurple.withValues(alpha: 0.1),
+                                    border: Border.all(
+                                      color: AppColors.appPurple.withValues(alpha: 0.3),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 12.w,
+                                            height: 12.h,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AppColors.appPurple,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          Expanded(
+                                            child: Text(
+                                              selectedMeal.mealName ?? '',
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.appBlack,
+                                              ),
+                                            ),
+                                          ),
+                                          Icon(
+                                            LucideIcons.chevronRight,
+                                            size: 20.sp,
+                                            color: AppColors.appBlack.withValues(alpha: 0.5),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 12.h),
+                                      Row(
+                                        children: [
+                                          _buildNutritionBadge(
+                                            '${selectedMeal.totalCalories ?? 0} kcal',
+                                            LucideIcons.flame,
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          _buildNutritionBadge(
+                                            '${selectedMeal.totalProteinG ?? 0}g protein',
+                                            LucideIcons.beef,
+                                          ),
+                                        ],
+                                      ),
+                                      if (selectedMeal.healthBenefitNote != null && selectedMeal.healthBenefitNote!.isNotEmpty) ...[
+                                        SizedBox(height: 12.h),
+                                        Container(
+                                          padding: EdgeInsets.all(12.w),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12.r),
+                                            color: AppColors.appWhite,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                LucideIcons.heartPulse,
+                                                size: 16.sp,
+                                                color: AppColors.appPurple,
+                                              ),
+                                              SizedBox(width: 8.w),
+                                              Expanded(
+                                                child: Text(
+                                                  selectedMeal.healthBenefitNote!,
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: AppColors.appBlack.withValues(alpha: 0.7),
+                                                    height: 1.4,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ],
                                   ),
                                 ),
-                              ],
+                              ),
+                            ] else ...[
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.h),
+                                  child: Text(
+                                    'Bu gün için öğün bulunmuyor',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: AppColors.appBlack.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
-                          ),
+                          ],
                         ),
                       ),
-                    ] else ...[
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.h),
-                          child: Text(
-                            'Bu gün için öğün bulunmuyor',
+                    );
+                  }),
+                  SizedBox(height: 20.h),
+                  Obx(() {
+                    final personalInfo = userController.user.value.personalInfo;
+                    if (personalInfo == null || personalInfo.isEmpty) {
+                      return SizedBox.shrink();
+                    }
+                    final info = personalInfo.last;
+                    final currentWeight = info.weight ?? 0.0;
+                    final targetWeight = info.targetWeight ?? 0.0;
+                    final goal = info.goal ?? '';
+
+                    // Hedefe ulaşma durumunu hesapla
+                    double weightDifference;
+                    double progress;
+                    bool isGoalReached;
+                    String statusMessage;
+
+                    // Kilo Vermek/Kaybetmek için: anlık kilo <= hedef kilo ise hedefe ulaştın
+                    // Kilo Almak için: anlık kilo >= hedef kilo ise hedefe ulaştın
+                    if (goal == 'Kilo Vermek' || goal == 'Kilo Kaybetmek') {
+                      weightDifference = currentWeight - targetWeight;
+                      isGoalReached = currentWeight <= targetWeight;
+                      // Progress: Başlangıçtan hedefe ne kadar yaklaştık (0-1 arası)
+                      // Başlangıç kilosu bilinmediği için mevcut farka göre hesaplıyoruz
+                      if (weightDifference <= 0) {
+                        progress = 1.0;
+                      } else if (weightDifference > 20) {
+                        progress = 0.1;
+                      } else {
+                        progress = 1.0 - (weightDifference / 20.0).clamp(0.0, 0.9);
+                      }
+                    } else if (goal == 'Kilo Almak') {
+                      weightDifference = targetWeight - currentWeight;
+                      isGoalReached = currentWeight >= targetWeight;
+                      if (weightDifference <= 0) {
+                        progress = 1.0;
+                      } else if (weightDifference > 20) {
+                        progress = 0.1;
+                      } else {
+                        progress = 1.0 - (weightDifference / 20.0).clamp(0.0, 0.9);
+                      }
+                    } else {
+                      // Kilo Koruma veya diğer hedefler
+                      weightDifference = (currentWeight - targetWeight).abs();
+                      isGoalReached = weightDifference <= 1.0;
+                      progress = isGoalReached ? 1.0 : 0.8;
+                    }
+
+                    // Durum mesajını belirle
+                    if (isGoalReached) {
+                      statusMessage = 'Tebrikler! Hedefe ulaştın! 🎉';
+                    } else if (progress >= 0.9) {
+                      statusMessage = 'Hedefe neredeyse ulaştın!';
+                    } else if (progress >= 0.7) {
+                      statusMessage = 'Harika gidiyorsun!';
+                    } else if (progress >= 0.5) {
+                      statusMessage = 'Yarı yoldasın, devam et!';
+                    } else {
+                      statusMessage = 'Hedefe doğru ilerliyorsun!';
+                    }
+
+                    // Kilo farkı için işaret
+                    String weightDiffText;
+                    if (goal == 'Kilo Vermek' || goal == 'Kilo Kaybetmek') {
+                      weightDiffText = weightDifference > 0 ? '-${weightDifference.toStringAsFixed(1)} Kg' : '${weightDifference.abs().toStringAsFixed(1)} Kg';
+                    } else if (goal == 'Kilo Almak') {
+                      weightDiffText = weightDifference > 0 ? '+${weightDifference.toStringAsFixed(1)} Kg' : '${weightDifference.abs().toStringAsFixed(1)} Kg';
+                    } else {
+                      weightDiffText = '${weightDifference.toStringAsFixed(1)} Kg';
+                    }
+
+                    return Container(
+                      padding: EdgeInsets.all(20.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: AppColors.appWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.appBlack.withValues(alpha: 0.1),
+                            blurRadius: 10.r,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          // Yarım daire progress göstergesi
+                          SizedBox(
+                            width: 160.w,
+                            height: 100.h,
+                            child: CustomPaint(
+                              painter: _GoalProgressPainter(
+                                progress: progress,
+                                isGoalReached: isGoalReached,
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 55.h),
+                                  child: Text(
+                                    weightDiffText,
+                                    style: TextStyle(
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.appBlack,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          // Durum mesajı
+                          Text(
+                            statusMessage,
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: AppColors.appBlack.withValues(alpha: 0.5),
+                              fontWeight: FontWeight.w600,
+                              color: isGoalReached ? Color(0xFF4CAF50) : Color(0xFF7CB342),
                             ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16.h),
+                          // Kilo bilgileri
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildWeightInfo(
+                                'Mevcut',
+                                '${currentWeight.toStringAsFixed(1)} kg',
+                                LucideIcons.scale,
+                              ),
+                              Container(
+                                width: 1,
+                                height: 40.h,
+                                color: AppColors.appGray,
+                              ),
+                              _buildWeightInfo(
+                                'Hedef',
+                                '${targetWeight.toStringAsFixed(1)} kg',
+                                LucideIcons.target,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                  SizedBox(height: 20.h),
+                  AppButton(
+                    width: double.infinity,
+                    height: 50.h,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const IngredientsScreen(),
+                        ),
+                      );
+                    },
+
+                    backgroundColor: AppColors.appPurple,
+                    foregroundColor: AppColors.appBlack,
+                    borderRadius: BorderRadius.circular(20.r),
+                    child: Row(
+                      children: [
+                        Icon(
+                          LucideIcons.tableOfContents,
+                          size: 24.sp,
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Porsiyon İçerikleri',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.appBlack,
                           ),
                         ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          }),
-          SizedBox(height: 20.h),
-          Obx(() {
-            final personalInfo = userController.user.value.personalInfo;
-            if (personalInfo == null || personalInfo.isEmpty) {
-              return SizedBox.shrink();
-            }
-            final info = personalInfo.last;
-            final currentWeight = info.weight ?? 0.0;
-            final targetWeight = info.targetWeight ?? 0.0;
-            final goal = info.goal ?? '';
-
-            // Hedefe ulaşma durumunu hesapla
-            double weightDifference;
-            double progress;
-            bool isGoalReached;
-            String statusMessage;
-
-            // Kilo Vermek/Kaybetmek için: anlık kilo <= hedef kilo ise hedefe ulaştın
-            // Kilo Almak için: anlık kilo >= hedef kilo ise hedefe ulaştın
-            if (goal == 'Kilo Vermek' || goal == 'Kilo Kaybetmek') {
-              weightDifference = currentWeight - targetWeight;
-              isGoalReached = currentWeight <= targetWeight;
-              // Progress: Başlangıçtan hedefe ne kadar yaklaştık (0-1 arası)
-              // Başlangıç kilosu bilinmediği için mevcut farka göre hesaplıyoruz
-              if (weightDifference <= 0) {
-                progress = 1.0;
-              } else if (weightDifference > 20) {
-                progress = 0.1;
-              } else {
-                progress = 1.0 - (weightDifference / 20.0).clamp(0.0, 0.9);
-              }
-            } else if (goal == 'Kilo Almak') {
-              weightDifference = targetWeight - currentWeight;
-              isGoalReached = currentWeight >= targetWeight;
-              if (weightDifference <= 0) {
-                progress = 1.0;
-              } else if (weightDifference > 20) {
-                progress = 0.1;
-              } else {
-                progress = 1.0 - (weightDifference / 20.0).clamp(0.0, 0.9);
-              }
-            } else {
-              // Kilo Koruma veya diğer hedefler
-              weightDifference = (currentWeight - targetWeight).abs();
-              isGoalReached = weightDifference <= 1.0;
-              progress = isGoalReached ? 1.0 : 0.8;
-            }
-
-            // Durum mesajını belirle
-            if (isGoalReached) {
-              statusMessage = 'Tebrikler! Hedefe ulaştın! 🎉';
-            } else if (progress >= 0.9) {
-              statusMessage = 'Hedefe neredeyse ulaştın!';
-            } else if (progress >= 0.7) {
-              statusMessage = 'Harika gidiyorsun!';
-            } else if (progress >= 0.5) {
-              statusMessage = 'Yarı yoldasın, devam et!';
-            } else {
-              statusMessage = 'Hedefe doğru ilerliyorsun!';
-            }
-
-            // Kilo farkı için işaret
-            String weightDiffText;
-            if (goal == 'Kilo Vermek' || goal == 'Kilo Kaybetmek') {
-              weightDiffText = weightDifference > 0 ? '-${weightDifference.toStringAsFixed(1)} Kg' : '${weightDifference.abs().toStringAsFixed(1)} Kg';
-            } else if (goal == 'Kilo Almak') {
-              weightDiffText = weightDifference > 0 ? '+${weightDifference.toStringAsFixed(1)} Kg' : '${weightDifference.abs().toStringAsFixed(1)} Kg';
-            } else {
-              weightDiffText = '${weightDifference.toStringAsFixed(1)} Kg';
-            }
-
-            return Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
-                color: AppColors.appWhite,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.appBlack.withValues(alpha: 0.1),
-                    blurRadius: 10.r,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  // Yarım daire progress göstergesi
-                  SizedBox(
-                    width: 160.w,
-                    height: 100.h,
-                    child: CustomPaint(
-                      painter: _GoalProgressPainter(
-                        progress: progress,
-                        isGoalReached: isGoalReached,
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 55.h),
-                          child: Text(
-                            weightDiffText,
-                            style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.appBlack,
-                            ),
-                          ),
+                        Spacer(),
+                        Icon(
+                          LucideIcons.chevronRight,
+                          size: 24.sp,
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 12.h),
-                  // Durum mesajı
-                  Text(
-                    statusMessage,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: isGoalReached ? Color(0xFF4CAF50) : Color(0xFF7CB342),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.h),
-                  // Kilo bilgileri
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildWeightInfo(
-                        'Mevcut',
-                        '${currentWeight.toStringAsFixed(1)} kg',
-                        LucideIcons.scale,
-                      ),
-                      Container(
-                        width: 1,
-                        height: 40.h,
-                        color: AppColors.appGray,
-                      ),
-                      _buildWeightInfo(
-                        'Hedef',
-                        '${targetWeight.toStringAsFixed(1)} kg',
-                        LucideIcons.target,
-                      ),
-                    ],
-                  ),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
                 ],
               ),
-            );
-          }),
-          SizedBox(height: 20.h),
-          AppButton(
-            width: double.infinity,
-            height: 50.h,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const IngredientsScreen(),
-                ),
-              );
-            },
-
-            backgroundColor: AppColors.appPurple,
-            foregroundColor: AppColors.appBlack,
-            borderRadius: BorderRadius.circular(20.r),
-            child: Row(
-              children: [
-                Icon(
-                  LucideIcons.tableOfContents,
-                  size: 24.sp,
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  'Porsiyon İçerikleri',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.appBlack,
-                  ),
-                ),
-                Spacer(),
-                Icon(
-                  LucideIcons.chevronRight,
-                  size: 24.sp,
-                ),
-              ],
             ),
-          ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom),
-        ],
-      ),
     );
   }
 }

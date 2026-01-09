@@ -31,4 +31,40 @@ class NutritionistService {
       return [];
     }
   }
+
+  /// Hasta günlük planlarını getir
+  Future<Map<String, dynamic>?> getPatientDailyPlans(String patientId) async {
+    try {
+      final response = await _dio.get(
+        AppUrls.getDailyPlanUrl(patientId),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode != 200) {
+        logger.e('Hasta planları yüklenirken hata: ${response.statusCode}');
+        return null;
+      }
+      return response.data as Map<String, dynamic>;
+    } catch (e) {
+      logger.e('Hasta planları yüklenirken hata: $e');
+      return null;
+    }
+  }
+
+  /// Plan onaylama - TODO: API endpoint gerekli
+  Future<bool> approvePlan(String patientId) async {
+    // TODO: Backend'de plan onaylama endpoint'i oluşturulduğunda implementasyon yapılacak
+    logger.w('approvePlan API henüz implement edilmedi');
+    return false;
+  }
+
+  /// Öğün güncelleme - TODO: API endpoint gerekli
+  Future<bool> updateMeal(String patientId, Map<String, dynamic> mealData) async {
+    // TODO: Backend'de öğün güncelleme endpoint'i oluşturulduğunda implementasyon yapılacak
+    logger.w('updateMeal API henüz implement edilmedi');
+    return false;
+  }
 }
