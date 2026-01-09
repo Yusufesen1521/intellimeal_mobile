@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intellimeal/models/all_users_model.dart';
 import 'package:intellimeal/nutritionist/controller/nutritionist_controller.dart';
 import 'package:intellimeal/nutritionist/screens/patient_options_dialog.dart';
@@ -71,19 +73,38 @@ class _NutritionistMainScreenState extends State<NutritionistMainScreen> {
                               ),
                             ],
                           ),
-                          // Yenile butonu
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.appPurple.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: IconButton(
-                              onPressed: controller.refreshPatients,
-                              icon: Icon(
-                                LucideIcons.refreshCw,
-                                color: AppColors.appBlack,
+                          Row(
+                            children: [
+                              // Yenile butonu
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.appPurple.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                                child: IconButton(
+                                  onPressed: controller.refreshPatients,
+                                  icon: Icon(
+                                    LucideIcons.refreshCw,
+                                    color: AppColors.appBlack,
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(width: 8.w),
+                              // Çıkış butonu
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red.shade50,
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                                child: IconButton(
+                                  onPressed: _showLogoutDialog,
+                                  icon: Icon(
+                                    LucideIcons.logOut,
+                                    color: Colors.red.shade400,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -550,5 +571,67 @@ class _NutritionistMainScreenState extends State<NutritionistMainScreen> {
         ],
       ),
     );
+  }
+
+  /// Çıkış yapma onay diyaloğunu gösterir
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Text(
+          'Çıkış Yap',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.appBlack,
+          ),
+        ),
+        content: Text(
+          'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'İptal',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _logout();
+            },
+            child: Text(
+              'Çıkış Yap',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.red.shade400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Çıkış işlemini gerçekleştirir
+  void _logout() {
+    final storage = GetStorage();
+    storage.remove('token');
+    storage.remove('userId');
+    context.go('/signin');
   }
 }

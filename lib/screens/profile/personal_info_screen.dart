@@ -1,14 +1,11 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/controllers/user_controller.dart';
-import 'package:intellimeal/services/dio_instance.dart';
 import 'package:intellimeal/services/user_services.dart';
 import 'package:intellimeal/utils/app_colors.dart';
-import 'package:intellimeal/utils/app_urls.dart';
+import 'package:intellimeal/utils/snackbar_helper.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
 import 'package:intellimeal/utils/widgets/selectable_expansion_wrap.dart';
@@ -24,7 +21,6 @@ class PersonalInfoScreen extends StatefulWidget {
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
-  final UserController userController = UserController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
@@ -35,6 +31,71 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   final TextEditingController chestSizeController = TextEditingController();
   final TextEditingController armSizeController = TextEditingController();
   final TextEditingController legSizeController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    ageController.dispose();
+    weightController.dispose();
+    heightController.dispose();
+    genderController.dispose();
+    neckSizeController.dispose();
+    waistSizeController.dispose();
+    hipSizeController.dispose();
+    chestSizeController.dispose();
+    armSizeController.dispose();
+    legSizeController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSave() async {
+    // Validasyon
+    if (ageController.text.isEmpty || weightController.text.isEmpty || heightController.text.isEmpty || genderController.text.isEmpty) {
+      SnackbarHelper.showWarning(context, 'Lütfen zorunlu alanları doldurun');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final success = await UserService().createPersonalInfo(
+        widget.userId,
+        widget.token,
+        ageController.text,
+        weightController.text,
+        heightController.text,
+        genderController.text,
+        neckSizeController.text,
+        waistSizeController.text,
+        hipSizeController.text,
+        chestSizeController.text,
+        armSizeController.text,
+        legSizeController.text,
+      );
+
+      if (!mounted) return;
+
+      if (success) {
+        // UserController'ı güncelle
+        if (Get.isRegistered<UserController>()) {
+          Get.find<UserController>().refreshTokens();
+        }
+
+        SnackbarHelper.showSuccess(context, 'Bilgileriniz kaydedildi!');
+        context.go('/main');
+      } else {
+        SnackbarHelper.showError(context, 'Bir hata oluştu. Lütfen tekrar deneyin.');
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarHelper.showError(context, 'Bağlantı hatası. Lütfen tekrar deneyin.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +111,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
           ),
         ),
         leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
+          onPressed: _isLoading ? null : () => context.pop(),
           icon: Icon(LucideIcons.chevronLeft),
         ),
       ),
@@ -65,7 +124,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Yaşınız',
+                hintText: 'Yaşınız *',
                 onChanged: (value) {
                   ageController.text = value;
                 },
@@ -74,7 +133,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Kilonuz',
+                hintText: 'Kilonuz (kg) *',
                 onChanged: (value) {
                   weightController.text = value;
                 },
@@ -83,14 +142,14 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Boyunuz',
+                hintText: 'Boyunuz (cm) *',
                 onChanged: (value) {
                   heightController.text = value;
                 },
               ),
               SizedBox(height: 20.h),
               SelectableExpansionWrap(
-                title: 'Cinsiyet',
+                title: 'Cinsiyet *',
                 options: [
                   "Erkek",
                   "Kadın",
@@ -104,7 +163,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Boyun Genişliği',
+                hintText: 'Boyun Çevresi (cm)',
                 onChanged: (value) {
                   neckSizeController.text = value;
                 },
@@ -113,7 +172,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Bel Genişliği',
+                hintText: 'Bel Çevresi (cm)',
                 onChanged: (value) {
                   waistSizeController.text = value;
                 },
@@ -122,7 +181,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Kalça Genişliği',
+                hintText: 'Kalça Çevresi (cm)',
                 onChanged: (value) {
                   hipSizeController.text = value;
                 },
@@ -131,7 +190,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Göğüs Genişliği',
+                hintText: 'Göğüs Çevresi (cm)',
                 onChanged: (value) {
                   chestSizeController.text = value;
                 },
@@ -140,7 +199,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Kol Genişliği',
+                hintText: 'Kol Çevresi (cm)',
                 onChanged: (value) {
                   armSizeController.text = value;
                 },
@@ -149,43 +208,15 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Apptextfield(
                 maxWidth: MediaQuery.of(context).size.width,
                 keyboardType: TextInputType.number,
-                hintText: 'Bacak Genişliği',
+                hintText: 'Bacak Çevresi (cm)',
                 onChanged: (value) {
                   legSizeController.text = value;
                 },
               ),
-
-              SizedBox(height: 20.h),
+              SizedBox(height: 24.h),
               AppButton(
-                onPressed: () async {
-                  await UserService()
-                      .createPersonalInfo(
-                        widget.userId,
-                        widget.token,
-                        ageController.text,
-                        weightController.text,
-                        heightController.text,
-                        genderController.text,
-                        neckSizeController.text,
-                        waistSizeController.text,
-                        hipSizeController.text,
-                        chestSizeController.text,
-                        armSizeController.text,
-                        legSizeController.text,
-                      )
-                      .then((value) {
-                        if (value) {
-                          userController.getUser();
-                          context.go('/main');
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Bir hata oluştu'),
-                            ),
-                          );
-                        }
-                      });
-                },
+                onPressed: _handleSave,
+                isLoading: _isLoading,
                 backgroundColor: AppColors.appGreen,
                 foregroundColor: AppColors.appWhite,
                 borderRadius: BorderRadius.circular(20.r),

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intellimeal/controllers/user_controller.dart';
-import 'package:intellimeal/local/user_local.dart';
 import 'package:intellimeal/services/auth_service.dart';
 import 'package:intellimeal/utils/app_colors.dart';
+import 'package:intellimeal/utils/snackbar_helper.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -21,6 +20,57 @@ class _SigninScreenState extends State<SigninScreen> {
   final AuthService authService = AuthService();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSignIn() async {
+    // Validasyon
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      SnackbarHelper.showWarning(context, 'Lütfen tüm alanları doldurun');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final result = await authService.signIn(
+        emailController.text,
+        passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      if (result != null) {
+        GetStorage().write('token', result.token);
+        GetStorage().write('userId', result.user!.id);
+
+        SnackbarHelper.showSuccess(context, 'Giriş başarılı!');
+
+        if (result.user!.role == 'DOCTOR') {
+          context.go('/nutritionist/main');
+        } else {
+          context.go('/main');
+        }
+      } else {
+        SnackbarHelper.showError(context, 'E-posta veya şifre hatalı');
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarHelper.showError(context, 'Bağlantı hatası. Lütfen tekrar deneyin.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,9 +85,7 @@ class _SigninScreenState extends State<SigninScreen> {
           ),
         ),
         leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
+          onPressed: _isLoading ? null : () => context.pop(),
           icon: Icon(
             LucideIcons.chevronLeft,
             color: AppColors.appBlack,
@@ -70,40 +118,14 @@ class _SigninScreenState extends State<SigninScreen> {
             ),
             SizedBox(height: 16.h),
             AppButton(
-              onPressed: () async {
-                final result = await authService.signIn(
-                  emailController.text,
-                  passwordController.text,
-                );
-
-                if (result != null) {
-                  if (context.mounted) {
-
-                    GetStorage().write('token', result.token);
-                    GetStorage().write('userId', result.user!.id);
-
-                    if(result.user!.role == 'DOCTOR') {
-                      context.push('/nutritionist/main');
-                    } else {
-                      context.push('/main');
-                    }
-                  }
-                } else {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Giriş başarısız'),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: Text('Giriş Yap'),
+              onPressed: _handleSignIn,
+              isLoading: _isLoading,
               backgroundColor: AppColors.appBlack,
               foregroundColor: AppColors.appWhite,
               borderRadius: BorderRadius.circular(20.r),
               width: 305.w,
               height: 50.h,
+              child: Text('Giriş Yap'),
             ),
           ],
         ),

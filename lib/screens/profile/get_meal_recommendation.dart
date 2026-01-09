@@ -74,10 +74,10 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
                       SelectableExpansionWrap(
                         title: 'Haraket Düzeyi',
                         options: const [
-                          'Aktif',
-                          'Orta',
-                          'Düzensiz',
-                          'Karışık',
+                          'Çok Aktif',
+                          'Orta Aktif',
+                          'Az Aktif',
+                          'Haraketsiz',
                         ],
                         multiSelect: false,
                         onSelectionChanged: (values) {
@@ -88,12 +88,12 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
                       SelectableExpansionWrap(
                         title: 'Beslenme Alışkanlığı',
                         options: const [
-                          'Aktif',
-                          'Orta',
-                          'Düzensiz',
-                          'Karışık',
+                          'Vegan',
+                          'Vejeteryan',
+                          'Etçil',
+                          'Hepçil',
                         ],
-                        multiSelect: true,
+                        multiSelect: false,
                         onSelectionChanged: (values) {
                           _eatingHabits = values;
                         },
@@ -103,9 +103,9 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
                         title: 'Amacınız',
                         options: const [
                           'Kilo Vermek',
-                          'Kilo Kaybetmek',
-                          'Kilo Koruma',
-                          'Sağlık',
+                          'Kilo Almak',
+                          'Kas Kazanmak',
+                          'Kilo Korumak',
                         ],
                         multiSelect: false,
                         onSelectionChanged: (values) {
@@ -130,6 +130,7 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
                       SelectableExpansionWrap(
                         title: 'Alerjenleriniz (Birden fazla seçebilirsiniz)',
                         options: const [
+                          'Fıstık',
                           'Balık',
                           'Kereviz',
                           'Kabuklular',

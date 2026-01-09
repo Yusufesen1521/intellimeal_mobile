@@ -8,9 +8,15 @@ import 'package:intellimeal/screens/main/main_screen.dart';
 import 'package:intellimeal/screens/profile/get_meal_recommendation.dart';
 import 'package:intellimeal/screens/profile/personal_info_screen.dart';
 import 'package:intellimeal/screens/profile/profile_settings_screen.dart';
+import 'package:intellimeal/screens/splash/splash_screen.dart';
 
 final router = GoRouter(
+  initialLocation: '/splash',
   routes: [
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
     GoRoute(
       path: '/',
       builder: (context, state) => const MainScreen(),

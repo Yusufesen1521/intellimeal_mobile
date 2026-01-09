@@ -1,5 +1,6 @@
 class AppUrls {
   static const String baseUrl = 'http://192.168.1.101:8080/rest/api';
+  static String webSocketUrl = 'ws://192.168.1.101:8080/ws';
 
   static const String signInUrl = '/auth/authenticate';
   static const String signUpUrl = '/auth/register';

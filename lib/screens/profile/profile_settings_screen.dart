@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 
@@ -151,7 +152,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
           ),
           // Kaydet Butonu
           Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: SizedBox(
               width: double.infinity,
               height: 50.h,
@@ -171,6 +172,43 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 12.h),
+          // Çıkış Yap Butonu
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50.h,
+              child: OutlinedButton(
+                onPressed: _showLogoutDialog,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.red.shade400, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.logout_rounded,
+                      color: Colors.red.shade400,
+                      size: 20.sp,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Çıkış Yap',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.red.shade400,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -346,6 +384,71 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         backgroundColor: AppColors.appGreen,
       ),
     );
+  }
+
+  /// Çıkış yapma onay diyaloğunu gösterir
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Text(
+          'Çıkış Yap',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.appBlack,
+          ),
+        ),
+        content: Text(
+          'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'İptal',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _logout();
+            },
+            child: Text(
+              'Çıkış Yap',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.red.shade400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Çıkış işlemini gerçekleştirir
+  void _logout() {
+    // GetStorage'dan kullanıcı bilgilerini temizle
+    final storage = GetStorage();
+    storage.remove('token');
+    storage.remove('userId');
+
+    // Giriş ekranına yönlendir ve tüm geçmişi temizle
+    context.go('/signin');
   }
 }
 
