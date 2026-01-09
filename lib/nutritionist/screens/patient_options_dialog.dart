@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:intellimeal/models/all_users_model.dart';
 import 'package:intellimeal/nutritionist/screens/patient_statistics_screen.dart';
 import 'package:intellimeal/nutritionist/screens/patient_plan_screen.dart';
@@ -125,7 +124,12 @@ class PatientOptionsDialog extends StatelessWidget {
                       color: AppColors.appBlue,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.to(() => PatientStatisticsScreen(patient: patient));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PatientStatisticsScreen(patient: patient),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -138,7 +142,7 @@ class PatientOptionsDialog extends StatelessWidget {
                       color: AppColors.appGreen,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.to(() => PatientPlanScreen(patient: patient));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPlanScreen(patient: patient)));
                       },
                     ),
                   ),

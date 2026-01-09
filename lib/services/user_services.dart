@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:intellimeal/models/chat_model.dart';
 import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/models/user_model.dart';
 import 'package:intellimeal/services/dio_instance.dart';
@@ -160,6 +161,23 @@ class UserService {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<ChatResponse> chat(String message) async {
+    try {
+      final response = await _dio.post(
+        AppUrls.chatBotUrl,
+        data: {
+          'message': message,
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to chat');
+      }
+      return ChatResponse.fromJson(response.data);
+    } catch (e) {
+      rethrow;
     }
   }
 }

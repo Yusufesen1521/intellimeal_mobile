@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intellimeal/services/user_services.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -87,9 +88,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _messageController.clear();
     _scrollToBottom();
 
-    // TODO: Burada HTTP isteği atılacak
-    // AI yanıtı geldiğinde _receiveAIResponse fonksiyonunu çağırın
-    _simulateAIResponse();
+    // AI yanıtını al
+    _fetchAIResponse(text);
   }
 
   /// AI yanıtı geldiğinde bu fonksiyonu çağırın
@@ -109,11 +109,21 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _scrollToBottom();
   }
 
-  /// Geçici simülasyon - Gerçek API entegrasyonunda bu fonksiyonu kaldırın
-  void _simulateAIResponse() {
-    Future.delayed(const Duration(seconds: 2), () {
-      _receiveAIResponse("Bu bir örnek yanıttır. API entegrasyonu yapıldığında gerçek yanıtlar burada görünecek.");
-    });
+  /// API'dan AI yanıtı al
+  Future<void> _fetchAIResponse(String message) async {
+    try {
+      final userService = UserService();
+      final chatResponse = await userService.chat(message);
+
+      if (!mounted) return;
+
+      final responseText = chatResponse.response ?? "Üzgünüm, bir yanıt alınamadı.";
+      _receiveAIResponse(responseText);
+    } catch (e) {
+      if (!mounted) return;
+
+      _receiveAIResponse("Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.");
+    }
   }
 
   @override

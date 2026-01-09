@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intellimeal/models/all_users_model.dart';
+import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/services/dio_instance.dart';
 import 'package:intellimeal/utils/app_urls.dart';
 import 'package:logger/logger.dart';
@@ -61,10 +62,33 @@ class NutritionistService {
     return false;
   }
 
-  /// Öğün güncelleme - TODO: API endpoint gerekli
-  Future<bool> updateMeal(String patientId, Map<String, dynamic> mealData) async {
-    // TODO: Backend'de öğün güncelleme endpoint'i oluşturulduğunda implementasyon yapılacak
-    logger.w('updateMeal API henüz implement edilmedi');
-    return false;
+  /// Öğün güncelleme
+  Future<bool> updateMeal(String patientId, int day, String mealType, Meal meal) async {
+    try {
+      final response = await _dio.put(
+        AppUrls.updateMealUrl(patientId, day.toString(), mealType),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: {
+          "meal_type": mealType,
+          "meal_name": meal.mealName,
+          "ingredients": meal.ingredients,
+          "total_calories": meal.totalCalories,
+          "total_protein_g": meal.totalProteinG,
+          "health_benefit_note": meal.healthBenefitNote ?? "",
+        },
+      );
+      if (response.statusCode != 200) {
+        logger.e('Öğün güncellenirken hata: ${response.statusCode}');
+        return false;
+      }
+      return true;
+    } catch (e) {
+      logger.e('Öğün güncellenirken hata: $e');
+      return false;
+    }
   }
 }

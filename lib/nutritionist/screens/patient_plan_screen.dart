@@ -485,16 +485,33 @@ class _PatientPlanScreenState extends State<PatientPlanScreen> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () async {
-                            final result = await Get.to(
-                              () => MealEditScreen(
-                                meal: meal,
-                                patientName: '${widget.patient.name ?? ''} ${widget.patient.surname ?? ''}'.trim(),
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MealEditScreen(
+                                  meal: meal,
+                                  patientName: '${widget.patient.name ?? ''} ${widget.patient.surname ?? ''}'.trim(),
+                                  patientId: widget.patient.id!,
+                                  day: dailyPlans[dayIndex].day ?? (dayIndex + 1),
+                                  mealType: meal.mealType!,
+                                ),
                               ),
                             );
                             if (result != null && result is Meal) {
                               setState(() {
                                 dailyPlans[dayIndex].meals![mealIndex] = result;
                               });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Öğün düzenlendi'),
+                                  backgroundColor: AppColors.appGreen.withOpacity(0.9),
+                                  margin: EdgeInsets.all(16.w),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                              );
                             }
                           },
                           borderRadius: BorderRadius.circular(8.r),
@@ -543,14 +560,16 @@ class _PatientPlanScreenState extends State<PatientPlanScreen> {
           child: InkWell(
             onTap: () {
               // TODO: Plan onaylama API'si eklenecek
-              Get.snackbar(
-                'Bilgi',
-                'Plan onaylama özelliği yakında eklenecek',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: AppColors.appBlue.withOpacity(0.9),
-                colorText: Colors.white,
-                margin: EdgeInsets.all(16.w),
-                borderRadius: 12.r,
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Plan onaylama özelliği yakında eklenecek'),
+                  backgroundColor: AppColors.appBlue.withOpacity(0.9),
+                  margin: EdgeInsets.all(16.w),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
               );
             },
             borderRadius: BorderRadius.circular(16.r),

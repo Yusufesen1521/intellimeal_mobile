@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:intellimeal/models/dailyPlan_model.dart';
+import 'package:intellimeal/services/nutritionist_service.dart';
 import 'package:intellimeal/utils/app_colors.dart';
+import 'package:logger/logger.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Öğün Düzenleme Ekranı
 /// Diyetisyen tek bir öğünü düzenleyebilir
 class MealEditScreen extends StatefulWidget {
+  final String patientId;
+  final int day;
+  final String mealType;
   final Meal meal;
   final String patientName;
 
   const MealEditScreen({
     super.key,
+    required this.patientId,
+    required this.day,
+    required this.mealType,
     required this.meal,
     required this.patientName,
   });
@@ -22,6 +29,7 @@ class MealEditScreen extends StatefulWidget {
 }
 
 class _MealEditScreenState extends State<MealEditScreen> {
+  final Logger logger = Logger();
   late TextEditingController mealNameController;
   late TextEditingController caloriesController;
   late TextEditingController proteinController;
@@ -105,23 +113,14 @@ class _MealEditScreenState extends State<MealEditScreen> {
       ingredients: ingredientControllers.map((c) => c.text).where((text) => text.isNotEmpty).toList(),
       totalCalories: int.tryParse(caloriesController.text),
       totalProteinG: double.tryParse(proteinController.text),
-      healthBenefitNote: healthBenefitController.text.isEmpty ? null : healthBenefitController.text,
+      healthBenefitNote: healthBenefitController.text.isEmpty ? "" : healthBenefitController.text,
     );
   }
 
   void _saveChanges() {
     final updatedMeal = _buildUpdatedMeal();
-    // TODO: API'ye kaydetme işlemi eklenecek
-    Get.back(result: updatedMeal);
-    Get.snackbar(
-      'Başarılı',
-      'Öğün düzenlendi',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.appGreen.withOpacity(0.9),
-      colorText: Colors.white,
-      margin: EdgeInsets.all(16.w),
-      borderRadius: 12.r,
-    );
+    NutritionistService().updateMeal(widget.patientId, widget.day, widget.mealType, updatedMeal);
+    Navigator.pop(context, updatedMeal);
   }
 
   @override
