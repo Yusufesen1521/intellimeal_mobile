@@ -6,7 +6,7 @@ import 'package:intellimeal/utils/app_urls.dart';
 class AuthService {
   final Dio _dio = DioInstance.dio;
 
-  Future<UserModel> signIn(String email, String password) async {
+  Future<UserModel?> signIn(String email, String password) async {
     try {
       final response = await _dio.post(
         AppUrls.signInUrl,
@@ -16,11 +16,11 @@ class AuthService {
         },
       );
       if (response.statusCode != 200) {
-        throw Exception('Failed to sign in');
+        return null;
       }
       return UserModel.fromJson(response.data);
     } catch (e) {
-      rethrow;
+      return null;
     }
   }
 

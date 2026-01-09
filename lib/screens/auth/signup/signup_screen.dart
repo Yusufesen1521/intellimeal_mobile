@@ -140,8 +140,8 @@ class _SignupScreenState extends State<SignupScreen> {
             // ),
             AppButton(
               onPressed: () async {
-                if (passwordController.text == confirmPasswordController.text) {
-                  SnackBar(content: Text('Şifreler uyuşmuyor'));
+                if (passwordController.text != confirmPasswordController.text) {
+                  print('Şifreler uyuşmuyor');
                   return;
                 }
                 final result = await authService.signUp(
@@ -151,14 +151,19 @@ class _SignupScreenState extends State<SignupScreen> {
                   emailController.text,
                   passwordController.text,
                 );
-                if (context.mounted) {
-                  if (result != null) {
-                    GetStorage().write('token', result.token);
-                    GetStorage().write('userId', result.user!.id);
-                    context.go('/profile/personal-info');
-                  } else {
-                    SnackBar(content: Text('Kayıt başarısız'));
-                  }
+
+                if (result != null) {
+                  GetStorage().write('token', result.token);
+                  GetStorage().write('userId', result.user!.id);
+                  context.go(
+                    '/profile/personal-info',
+                    extra: {
+                      'userId': result.user!.id,
+                      'token': result.token,
+                    },
+                  );
+                } else {
+                  print(result);
                 }
               },
 

@@ -76,10 +76,20 @@ class _SigninScreenState extends State<SigninScreen> {
                   passwordController.text,
                 );
 
-                if (context.mounted) {
-                  GetStorage().write('token', result.token);
-                  GetStorage().write('userId', result.user!.id);
-                  context.push('/main');
+                if (result != null) {
+                  if (context.mounted) {
+                    GetStorage().write('token', result.token);
+                    GetStorage().write('userId', result.user!.id);
+                    context.push('/main');
+                  }
+                } else {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Giriş başarısız'),
+                      ),
+                    );
+                  }
                 }
               },
               child: Text('Giriş Yap'),

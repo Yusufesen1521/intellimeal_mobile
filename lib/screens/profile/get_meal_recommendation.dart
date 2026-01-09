@@ -1,7 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intellimeal/controllers/user_controller.dart';
+import 'package:intellimeal/services/dio_instance.dart';
+import 'package:intellimeal/services/user_services.dart';
 import 'package:intellimeal/utils/app_colors.dart';
+import 'package:intellimeal/utils/loading_Screen.dart';
+import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
 import 'package:intellimeal/utils/widgets/selectable_expansion_wrap.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -14,109 +21,181 @@ class GetMealRecommendation extends StatefulWidget {
 }
 
 class _GetMealRecommendationState extends State<GetMealRecommendation> {
+  final UserController userController = Get.find<UserController>();
+  final TextEditingController _goalWeightController = TextEditingController();
+  List<String> _activityLevel = [];
+  List<String> _eatingHabits = [];
+  List<String> _goals = [];
+  List<String> _diseases = [];
+  List<String> _allergies = [];
+  var _isLoading = false.obs;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Öğün Önerisi Al',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.appBlack,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
-          icon: Icon(LucideIcons.chevronLeft),
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          children: [
-            SizedBox(height: 20.h),
-            Apptextfield(
-              maxWidth: MediaQuery.of(context).size.width,
-              keyboardType: TextInputType.number,
-              hintText: 'Yaşınız',
-              onChanged: (value) {},
+    return Obx(
+      () => _isLoading.value
+          ? const LoadingScreen(
+              isWaitingAI: true,
+            )
+          : Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: Text(
+                  'Öğün Önerisi Al',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.appBlack,
+                  ),
+                ),
+                leading: IconButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  icon: Icon(LucideIcons.chevronLeft),
+                ),
+              ),
+              body: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20.h),
+                      Apptextfield(
+                        maxWidth: MediaQuery.of(context).size.width,
+                        keyboardType: TextInputType.number,
+                        hintText: 'Hedef Kilo',
+                        onChanged: (value) {
+                          _goalWeightController.text = value;
+                        },
+                      ),
+
+                      SizedBox(height: 20.h),
+                      SelectableExpansionWrap(
+                        title: 'Haraket Düzeyi',
+                        options: const [
+                          'Aktif',
+                          'Orta',
+                          'Düzensiz',
+                          'Karışık',
+                        ],
+                        multiSelect: false,
+                        onSelectionChanged: (values) {
+                          _activityLevel = values;
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      SelectableExpansionWrap(
+                        title: 'Beslenme Alışkanlığı',
+                        options: const [
+                          'Aktif',
+                          'Orta',
+                          'Düzensiz',
+                          'Karışık',
+                        ],
+                        multiSelect: true,
+                        onSelectionChanged: (values) {
+                          _eatingHabits = values;
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      SelectableExpansionWrap(
+                        title: 'Amacınız',
+                        options: const [
+                          'Kilo Vermek',
+                          'Kilo Kaybetmek',
+                          'Kilo Koruma',
+                          'Sağlık',
+                        ],
+                        multiSelect: false,
+                        onSelectionChanged: (values) {
+                          _goals = values;
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      SelectableExpansionWrap(
+                        title: 'Hastalıklarınız',
+                        options: const [
+                          'Diabet',
+                          'Obesite',
+                          'Kolesterol',
+                          'Tansiyon',
+                        ],
+                        multiSelect: true,
+                        onSelectionChanged: (values) {
+                          _diseases = values;
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      SelectableExpansionWrap(
+                        title: 'Alerjenleriniz (Birden fazla seçebilirsiniz)',
+                        options: const [
+                          'Balık',
+                          'Kereviz',
+                          'Kabuklular',
+                          'Mısır',
+                          'Susam',
+                          'Yumurta',
+                          'Gluten',
+                          'Laktose',
+                          'Baklagil',
+                        ],
+                        multiSelect: true,
+                        onSelectionChanged: (values) {
+                          _allergies = values;
+                        },
+                      ),
+                      SizedBox(height: 32.h),
+                      AppButton(
+                        onPressed: () async {
+                          _isLoading.value = true;
+                          await UserService()
+                              .updatePersonalInfo(
+                                userController.user.value.id!,
+                                userController.token,
+                                userController.user.value.personalInfo!.first.id!,
+                                userController.user.value.personalInfo!.first.age!.toString(),
+                                userController.user.value.personalInfo!.first.weight!.toString(),
+                                _goalWeightController.text,
+                                userController.user.value.personalInfo!.first.height!.toString(),
+                                userController.user.value.personalInfo!.first.gender!.toString(),
+                                _activityLevel.isNotEmpty ? _activityLevel.first : '',
+                                _eatingHabits.join(','),
+                                _goals.isNotEmpty ? _goals.first : '',
+                                _diseases.join(','),
+                                userController.user.value.personalInfo!.first.neckSize!.toString(),
+                                userController.user.value.personalInfo!.first.waistSize!.toString(),
+                                userController.user.value.personalInfo!.first.hipSize!.toString(),
+                                userController.user.value.personalInfo!.first.chestSize!.toString(),
+                                userController.user.value.personalInfo!.first.armSize!.toString(),
+                                userController.user.value.personalInfo!.first.legSize!.toString(),
+                              )
+                              .then((value) {
+                                if (value) {
+                                  _isLoading.value = false;
+                                }
+                              });
+                        },
+                        backgroundColor: AppColors.appGreen,
+                        foregroundColor: AppColors.appWhite,
+                        borderRadius: BorderRadius.circular(20.r),
+                        width: 335.w,
+                        height: 50.h,
+                        child: Text(
+                          'Öğün Önerisi Al',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.appBlack,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            Apptextfield(
-              maxWidth: MediaQuery.of(context).size.width,
-              keyboardType: TextInputType.number,
-              hintText: 'Yaşınız',
-              onChanged: (value) {},
-            ),
-            Apptextfield(
-              maxWidth: MediaQuery.of(context).size.width,
-              keyboardType: TextInputType.number,
-              hintText: 'Yaşınız',
-              onChanged: (value) {},
-            ),
-            SizedBox(height: 20.h),
-            SelectableExpansionWrap(
-              title: 'Haraket Düzeyi',
-              options: const [
-                'Aktif',
-                'Orta',
-                'Düzensiz',
-                'Karışık',
-              ],
-              multiSelect: false,
-              onSelectionChanged: (values) {},
-            ),
-            SizedBox(height: 20.h),
-            SelectableExpansionWrap(
-              title: 'Beslenme Alışkanlığı',
-              options: const [
-                'Kilo Vermek',
-                'Kilo Kaybetmek',
-                'Kilo Koruma',
-                'Sağlık',
-              ],
-              multiSelect: true,
-              onSelectionChanged: (values) {},
-            ),
-            SelectableExpansionWrap(
-              title: 'Amacınız',
-              options: const [
-                'Kilo Vermek',
-                'Kilo Kaybetmek',
-                'Kilo Koruma',
-                'Sağlık',
-              ],
-              multiSelect: true,
-              onSelectionChanged: (values) {},
-            ),
-            SelectableExpansionWrap(
-              title: 'Hastalıklarınız',
-              options: const [
-                'Kilo Vermek',
-                'Kilo Kaybetmek',
-                'Kilo Koruma',
-                'Sağlık',
-              ],
-              multiSelect: true,
-              onSelectionChanged: (values) {},
-            ),
-            SelectableExpansionWrap(
-              title: 'Alerjenleriniz',
-              options: const [
-                'Kilo Vermek',
-                'Kilo Kaybetmek',
-                'Kilo Koruma',
-                'Sağlık',
-              ],
-              multiSelect: true,
-              onSelectionChanged: (values) {},
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/controllers/user_controller.dart';
 import 'package:intellimeal/utils/app_colors.dart';
@@ -15,7 +15,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  UserController userController = UserController();
+  UserController userController = Get.find<UserController>();
 
   @override
   void initState() {
@@ -77,6 +77,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: AppColors.appBlack,
                         ),
                       ),
+                      Obx(
+                        () => Text(
+                          "${userController.user.value.personalInfo?.first.weight ?? 0} kg",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.appBlack,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -103,12 +113,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: AppColors.appBlack,
                         ),
                       ),
-                      Text(
-                        "20%",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.appBlack,
+                      Obx(
+                        () => Text(
+                          "${userController.user.value.personalInfo?.first.armSize ?? 0} %",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.appBlack,
+                          ),
                         ),
                       ),
                     ],
@@ -135,6 +147,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.appBlack,
+                        ),
+                      ),
+                      Obx(
+                        () => Text(
+                          "${calculateBodyFatPercentage(userController.user.value.personalInfo?.first.weight, userController.user.value.personalInfo?.first.height).value.round()}",
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.appBlack,
+                          ),
                         ),
                       ),
                     ],
@@ -172,6 +194,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-double calculateBodyFatPercentage(double weight, double height) {
-  return weight / (height * height);
+RxDouble calculateBodyFatPercentage(double? _weight, int? _height) {
+  double weight = _weight ?? 1;
+  double height = (_height ?? 1) / 100;
+  return RxDouble(weight / (height * height));
 }

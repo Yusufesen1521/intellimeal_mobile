@@ -31,7 +31,13 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/profile/personal-info',
-      builder: (context, state) => const PersonalInfoScreen(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return PersonalInfoScreen(
+          userId: extra['userId']!,
+          token: extra['token']!,
+        );
+      },
     ),
   ],
 );

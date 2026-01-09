@@ -6,6 +6,7 @@ import 'package:intellimeal/screens/profile/personal_info_screen.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -32,12 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
     'Yatış Yemeği',
   ];
 
-  UserController userController = UserController();
+  UserController userController = Get.put(UserController());
 
   @override
   void initState() {
     super.initState();
     userController.getUser();
+    userController.getDailyPlan();
   }
 
   @override
@@ -60,14 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }),
               IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PersonalInfoScreen(),
-                    ),
-                  );
-                },
+                onPressed: () {},
                 icon: Icon(LucideIcons.bell),
               ),
             ],

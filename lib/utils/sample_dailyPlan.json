@@ -1,0 +1,132 @@
+{
+    "daily_plans": [
+        {
+            "day": 1,
+            "date": "2026-01-09",
+            "checked": false,
+            "meals": [
+                {
+                    "meal_type": "breakfast",
+                    "meal_name": "Glutensiz Yulaflı Berry Puding",
+                    "ingredients": [
+                        "50g Sertifikalı Glutensiz Yulaf Ezmesi",
+                        "200ml Şekersiz Badem Sütü",
+                        "1 yemek kaşığı Chia Tohumu",
+                        "100g Karışık Böğürtlen (taze veya dondurulmuş)",
+                        "Bir tutam Tarçın"
+                    ],
+                    "total_calories": 320,
+                    "total_protein_g": 10.5,
+                    "health_benefit_note": "Yüksek lif içeriği ve düşük glisemik indeksi sayesinde kan şekerini dengeler ve uzun süre tokluk sağlar."
+                },
+                {
+                    "meal_type": "lunch",
+                    "meal_name": "Avokadolu Izgara Tavuk Salatası",
+                    "ingredients": [
+                        "150g Izgara Tavuk Göğsü (dilimlenmiş)",
+                        "3 su bardağı Karışık Salata Yeşillikleri (marul, roka, ıspanak)",
+                        "Yarım Salatalık (dilimlenmiş)",
+                        "Yarım Kırmızı Biber (dilimlenmiş)",
+                        "Çeyrek Avokado (küp doğranmış)",
+                        "1 yemek kaşığı Zeytinyağı ve Limon Sosu"
+                    ],
+                    "total_calories": 493,
+                    "total_protein_g": 49.0,
+                    "health_benefit_note": "Yüksek protein ve sağlıklı yağ içeriği ile kas kütlesinin korunmasına yardımcı olurken, lifli sebzelerle kan şekerini kontrol altında tutar."
+                },
+                {
+                    "meal_type": "dinner",
+                    "meal_name": "Fırında Somon, Kavrulmuş Brokoli ve Kinoa",
+                    "ingredients": [
+                        "150g Fırında Somon Fileto",
+                        "1.5 su bardağı Kavrulmuş Brokoli Çiçekleri",
+                        "Yarım su bardağı Haşlanmış Kinoa",
+                        "1 çay kaşığı Zeytinyağı (brokoli için)"
+                    ],
+                    "total_calories": 540,
+                    "total_protein_g": 42.0,
+                    "health_benefit_note": "Omega-3 yağ asitleri ve kaliteli protein, kalp sağlığını destekler ve tokluk hissini artırır. Kinoa ise düşük GI'li bir karbonhidrat kaynağıdır."
+                },
+                {
+                    "meal_type": "snack",
+                    "meal_name": "Yeşil Elma ve Badem Ezmesi",
+                    "ingredients": [
+                        "1 Orta Boy Yeşil Elma",
+                        "2 yemek kaşığı Doğal Badem Ezmesi (şekersiz)"
+                    ],
+                    "total_calories": 285,
+                    "total_protein_g": 6.5,
+                    "health_benefit_note": "Lifli elma ve sağlıklı yağlar içeren badem ezmesi, kan şekerini ani yükselişlerden korur ve ara öğünlerde enerji sağlar."
+                }
+            ],
+            "day_summary": {
+                "total_calories": 1638,
+                "total_protein_g": 108.0
+            }
+        },
+        {
+            "day": 2,
+            "date": "2026-01-10",
+            "checked": false,
+            "meals": [
+                {
+                    "meal_type": "breakfast",
+                    "meal_name": "Glutensiz Yulaflı Berry Puding",
+                    "ingredients": [
+                        "50g Sertifikalı Glutensiz Yulaf Ezmesi",
+                        "200ml Şekersiz Badem Sütü",
+                        "1 yemek kaşığı Chia Tohumu",
+                        "100g Karışık Böğürtlen (taze veya dondurulmuş)",
+                        "Bir tutam Tarçın"
+                    ],
+                    "total_calories": 320,
+                    "total_protein_g": 10.5,
+                    "health_benefit_note": "Yüksek lif içeriği ve düşük glisemik indeksi sayesinde kan şekerini dengeler ve uzun süre tokluk sağlar."
+                },
+                {
+                    "meal_type": "lunch",
+                    "meal_name": "Avokadolu Izgara Tavuk Salatası",
+                    "ingredients": [
+                        "150g Izgara Tavuk Göğsü (dilimlenmiş)",
+                        "3 su bardağı Karışık Salata Yeşillikleri (marul, roka, ıspanak)",
+                        "Yarım Salatalık (dilimlenmiş)",
+                        "Yarım Kırmızı Biber (dilimlenmiş)",
+                        "Çeyrek Avokado (küp doğranmış)",
+                        "1 yemek kaşığı Zeytinyağı ve Limon Sosu"
+                    ],
+                    "total_calories": 493,
+                    "total_protein_g": 49.0,
+                    "health_benefit_note": "Yüksek protein ve sağlıklı yağ içeriği ile kas kütlesinin korunmasına yardımcı olurken, lifli sebzelerle kan şekerini kontrol altında tutar."
+                },
+                {
+                    "meal_type": "dinner",
+                    "meal_name": "Fırında Somon, Kavrulmuş Brokoli ve Kinoa",
+                    "ingredients": [
+                        "150g Fırında Somon Fileto",
+                        "1.5 su bardağı Kavrulmuş Brokoli Çiçekleri",
+                        "Yarım su bardağı Haşlanmış Kinoa",
+                        "1 çay kaşığı Zeytinyağı (brokoli için)"
+                    ],
+                    "total_calories": 540,
+                    "total_protein_g": 42.0,
+                    "health_benefit_note": "Omega-3 yağ asitleri ve kaliteli protein, kalp sağlığını destekler ve tokluk hissini artırır. Kinoa ise düşük GI'li bir karbonhidrat kaynağıdır."
+                },
+                {
+                    "meal_type": "snack",
+                    "meal_name": "Yeşil Elma ve Badem Ezmesi",
+                    "ingredients": [
+                        "1 Orta Boy Yeşil Elma",
+                        "2 yemek kaşığı Doğal Badem Ezmesi (şekersiz)"
+                    ],
+                    "total_calories": 285,
+                    "total_protein_g": 6.5,
+                    "health_benefit_note": "Lifli elma ve sağlıklı yağlar içeren badem ezmesi, kan şekerini ani yükselişlerden korur ve ara öğünlerde enerji sağlar."
+                }
+            ],
+            "day_summary": {
+                "total_calories": 1638,
+                "total_protein_g": 108.0
+            }
+        }
+    ]
+}

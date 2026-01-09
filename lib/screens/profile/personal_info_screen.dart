@@ -1,20 +1,30 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intellimeal/controllers/user_controller.dart';
+import 'package:intellimeal/services/dio_instance.dart';
+import 'package:intellimeal/services/user_services.dart';
 import 'package:intellimeal/utils/app_colors.dart';
+import 'package:intellimeal/utils/app_urls.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:intellimeal/utils/widgets/apptextfield.dart';
 import 'package:intellimeal/utils/widgets/selectable_expansion_wrap.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
-  const PersonalInfoScreen({super.key});
+  final String userId;
+  final String token;
+  const PersonalInfoScreen({super.key, required this.userId, required this.token});
 
   @override
   State<PersonalInfoScreen> createState() => _PersonalInfoScreenState();
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
+  final UserController userController = UserController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
@@ -147,17 +157,34 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
               SizedBox(height: 20.h),
               AppButton(
-                onPressed: () {
-                  debugPrint(ageController.text);
-                  debugPrint(weightController.text);
-                  debugPrint(heightController.text);
-                  debugPrint(genderController.text);
-                  debugPrint(neckSizeController.text);
-                  debugPrint(waistSizeController.text);
-                  debugPrint(hipSizeController.text);
-                  debugPrint(chestSizeController.text);
-                  debugPrint(armSizeController.text);
-                  debugPrint(legSizeController.text);
+                onPressed: () async {
+                  await UserService()
+                      .createPersonalInfo(
+                        widget.userId,
+                        widget.token,
+                        ageController.text,
+                        weightController.text,
+                        heightController.text,
+                        genderController.text,
+                        neckSizeController.text,
+                        waistSizeController.text,
+                        hipSizeController.text,
+                        chestSizeController.text,
+                        armSizeController.text,
+                        legSizeController.text,
+                      )
+                      .then((value) {
+                        if (value) {
+                          userController.getUser();
+                          context.go('/main');
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Bir hata oluştu'),
+                            ),
+                          );
+                        }
+                      });
                 },
                 backgroundColor: AppColors.appGreen,
                 foregroundColor: AppColors.appWhite,
