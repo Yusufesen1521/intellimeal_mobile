@@ -5,8 +5,11 @@ import 'package:intellimeal/models/all_users_model.dart';
 import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/nutritionist/controller/nutritionist_controller.dart';
 import 'package:intellimeal/nutritionist/screens/meal_edit_screen.dart';
+import 'package:intellimeal/services/nutritionist_service.dart';
+import 'package:intellimeal/services/websocket_instance.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:logger/logger.dart';
 
 /// Hasta Plan Ekranı
 /// AI tarafından oluşturulan beslenme planlarını gösterir ve düzenleme imkanı sağlar
@@ -21,8 +24,10 @@ class PatientPlanScreen extends StatefulWidget {
 
 class _PatientPlanScreenState extends State<PatientPlanScreen> {
   final NutritionistController controller = Get.find<NutritionistController>();
+  final Logger logger = Logger();
   int? selectedDayIndex;
   bool isLoading = true;
+  bool isApproving = false;
   List<DailyPlan> dailyPlans = [];
 
   // Mavi renk paleti
@@ -541,6 +546,57 @@ class _PatientPlanScreenState extends State<PatientPlanScreen> {
     );
   }
 
+  Future<void> _approvePlan() async {
+    if (isApproving) return;
+
+    setState(() => isApproving = true);
+
+    try {
+      final patientId = widget.patient.id ?? '';
+
+      // Tüm planları onaylı olarak işaretle (check-all API)
+      await NutritionistService().checkAllDailyPlans(patientId);
+
+      // WebSocket üzerinden hastaya onay mesajı gönder
+      WebSocketInstance().sendApproved(patientId);
+      logger.d('Plan onaylandı, WebSocket mesajı gönderildi: $patientId');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Plan başarıyla onaylandı'),
+            backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+            margin: EdgeInsets.all(16.w),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+          ),
+        );
+        Navigator.pop(context, true); // Onaylandı bilgisiyle geri dön
+      }
+    } catch (e) {
+      logger.e('Plan onaylanırken hata: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Onaylama başarısız: $e'),
+            backgroundColor: Colors.red.withOpacity(0.9),
+            margin: EdgeInsets.all(16.w),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isApproving = false);
+      }
+    }
+  }
+
   Widget _buildApproveButton() {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -558,20 +614,7 @@ class _PatientPlanScreenState extends State<PatientPlanScreen> {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () {
-              // TODO: Plan onaylama API'si eklenecek
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Plan onaylama özelliği yakında eklenecek'),
-                  backgroundColor: AppColors.appBlue.withOpacity(0.9),
-                  margin: EdgeInsets.all(16.w),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                ),
-              );
-            },
+            onTap: isApproving ? null : _approvePlan,
             borderRadius: BorderRadius.circular(16.r),
             child: Container(
               width: double.infinity,
@@ -580,15 +623,12 @@ class _PatientPlanScreenState extends State<PatientPlanScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    const Color(0xFF4CAF50),
-                    const Color(0xFF2E7D32),
-                  ],
+                  colors: isApproving ? [Colors.grey.shade400, Colors.grey.shade500] : [const Color(0xFF4CAF50), const Color(0xFF2E7D32)],
                 ),
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF4CAF50).withOpacity(0.3),
+                    color: (isApproving ? Colors.grey : const Color(0xFF4CAF50)).withOpacity(0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -597,14 +637,24 @@ class _PatientPlanScreenState extends State<PatientPlanScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    LucideIcons.circleCheck,
-                    size: 22.sp,
-                    color: Colors.white,
-                  ),
+                  if (isApproving)
+                    SizedBox(
+                      width: 22.sp,
+                      height: 22.sp,
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  else
+                    Icon(
+                      LucideIcons.circleCheck,
+                      size: 22.sp,
+                      color: Colors.white,
+                    ),
                   SizedBox(width: 10.w),
                   Text(
-                    'Planı Onayla',
+                    isApproving ? 'Onaylanıyor...' : 'Planı Onayla',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,

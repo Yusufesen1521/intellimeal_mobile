@@ -122,6 +122,7 @@ class UserService {
     String dietaryPreference,
     String goal,
     String healthCondition,
+    String allergies,
     String neckSize,
     String waistSize,
     String hipSize,
@@ -147,6 +148,7 @@ class UserService {
           "dietaryPreference": dietaryPreference,
           "goal": goal,
           "healthCondition": healthCondition,
+          "allergens": allergies,
           "neckSize": neckSize,
           "waistSize": waistSize,
           "hipSize": hipSize,
@@ -161,6 +163,39 @@ class UserService {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Kullanıcı bilgilerini günceller (ad, soyad, telefon, email)
+  Future<User> updateUser(
+    String id,
+    String token,
+    String name,
+    String surname,
+    String phoneNumber,
+    String email,
+  ) async {
+    try {
+      final response = await _dio.put(
+        AppUrls.updateUserUrl(id),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: {
+          'name': name,
+          'surname': surname,
+          'phoneNumber': phoneNumber,
+          'email': email,
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update user');
+      }
+      return User.fromJson(response.data);
+    } catch (e) {
+      rethrow;
     }
   }
 

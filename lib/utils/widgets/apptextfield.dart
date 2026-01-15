@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -11,6 +12,7 @@ class Apptextfield extends StatefulWidget {
   final double maxWidth;
   final double maxHeight;
   final bool isPassword;
+  final int? maxLength;
   final Function(String) onChanged;
   const Apptextfield({
     super.key,
@@ -21,6 +23,7 @@ class Apptextfield extends StatefulWidget {
     this.maxWidth = 305,
     this.maxHeight = 50,
     this.isPassword = false,
+    this.maxLength = 50,
     required this.onChanged,
   });
 
@@ -49,6 +52,7 @@ class _ApptextfieldState extends State<Apptextfield> {
       width: widget.maxWidth.w,
       height: widget.maxHeight.h,
       child: TextFormField(
+        maxLength: widget.maxLength,
         keyboardType: widget.keyboardType,
         cursorColor: AppColors.appBlack,
         onTapOutside: (event) {
@@ -57,6 +61,7 @@ class _ApptextfieldState extends State<Apptextfield> {
         obscureText: widget.isPassword ? _obscureText : false,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
+          counterText: '',
           prefixIcon: widget.prefixIcon != null
               ? Icon(
                   widget.prefixIcon!,

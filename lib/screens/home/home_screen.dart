@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     userController.getUser();
                   },
-                  icon: Icon(LucideIcons.bell),
+                  icon: Icon(LucideIcons.refreshCcw),
                 ),
               ],
             ),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intellimeal/controllers/user_controller.dart';
+import 'package:intellimeal/services/websocket_instance.dart';
 import 'package:intellimeal/utils/app_colors.dart';
 import 'package:intellimeal/utils/widgets/appbutton.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -79,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Obx(
                         () => Text(
-                          "${userController.user.value.personalInfo?.last.weight ?? 0} kg",
+                          "${(userController.user.value.personalInfo?.isNotEmpty == true) ? userController.user.value.personalInfo!.last.weight ?? 0 : 0} kg",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
@@ -115,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Obx(
                         () => Text(
-                          "${userController.user.value.personalInfo?.last.armSize ?? 0} %",
+                          "${(userController.user.value.personalInfo?.isNotEmpty == true) ? userController.user.value.personalInfo!.last.armSize ?? 0 : 0} %",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
@@ -151,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Obx(
                         () => Text(
-                          "${calculateBodyFatPercentage(userController.user.value.personalInfo?.last.weight, userController.user.value.personalInfo?.last.height).value.round()}",
+                          "${calculateBodyFatPercentage((userController.user.value.personalInfo?.isNotEmpty == true) ? userController.user.value.personalInfo!.last.weight : null, (userController.user.value.personalInfo?.isNotEmpty == true) ? userController.user.value.personalInfo!.last.height : null).value.round()}",
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,

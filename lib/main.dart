@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intellimeal/routes/go_router.dart';
+import 'package:intellimeal/services/notification_service.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  await NotificationService().initialize();
   runApp(const MyApp());
 }
 

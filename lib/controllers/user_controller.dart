@@ -3,6 +3,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/models/user_model.dart';
 import 'package:intellimeal/services/user_services.dart';
+import 'package:intellimeal/services/websocket_instance.dart';
 import 'package:logger/logger.dart';
 
 /// Kullanıcı verileri ve durumu için controller
@@ -90,6 +91,24 @@ class UserController extends GetxController {
       getDailyPlan(),
     ]);
     isLoading.value = false;
+
+    // Kullanıcı verisi yüklendikten sonra WebSocket bağlantısını başlat
+    _connectWebSocket();
+  }
+
+  /// WebSocket bağlantısını başlat
+  void _connectWebSocket() {
+    if (userId.isNotEmpty && user.value.id != null) {
+      final role = user.value.role ?? 'USER';
+      WebSocketInstance().connect(userId: userId, role: role);
+      logger.d('WebSocket bağlantısı başlatıldı: userId=$userId, role=$role');
+
+      // Approved mesajı geldiğinde planları yenile (USER için)
+      WebSocketInstance().onApproved.listen((_) {
+        logger.d('WebSocket: Onay mesajı alındı, planlar yenileniyor');
+        getDailyPlan();
+      });
+    }
   }
 
   /// Seçili günlük planı ayarla

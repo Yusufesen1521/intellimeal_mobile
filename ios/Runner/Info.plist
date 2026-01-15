@@ -45,5 +45,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Bildirim İzni -->
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Öğün hatırlatmaları ve önemli güncellemeler için bildirimlere ihtiyacımız var.</string>
 </dict>
 </plist>

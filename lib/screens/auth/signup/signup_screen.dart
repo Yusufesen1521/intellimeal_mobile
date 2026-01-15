@@ -78,8 +78,9 @@ class _SignupScreenState extends State<SignupScreen> {
         SnackbarHelper.showSuccess(context, 'Kayıt başarılı!');
 
         context.go(
-          '/profile/personal-info',
+          '/verification',
           extra: {
+            'email': result.user!.email,
             'userId': result.user!.id,
             'token': result.token,
           },

@@ -632,6 +632,6 @@ class _NutritionistMainScreenState extends State<NutritionistMainScreen> {
     final storage = GetStorage();
     storage.remove('token');
     storage.remove('userId');
-    context.go('/signin');
+    context.go('/');
   }
 }

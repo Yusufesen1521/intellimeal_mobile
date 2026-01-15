@@ -50,4 +50,22 @@ class AuthService {
       return null;
     }
   }
+
+  Future<bool> verify(String verificationCode, String email) async {
+    try {
+      final response = await _dio.post(
+        AppUrls.verifyUrl,
+        data: {
+          "email": email,
+          "code": verificationCode,
+        },
+      );
+      if (response.statusCode != 200) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

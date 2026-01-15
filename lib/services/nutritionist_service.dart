@@ -55,11 +55,27 @@ class NutritionistService {
     }
   }
 
-  /// Plan onaylama - TODO: API endpoint gerekli
-  Future<bool> approvePlan(String patientId) async {
-    // TODO: Backend'de plan onaylama endpoint'i oluşturulduğunda implementasyon yapılacak
-    logger.w('approvePlan API henüz implement edilmedi');
-    return false;
+  /// Tüm günlük planları onaylı olarak işaretle (check-all)
+  Future<bool> checkAllDailyPlans(String patientId) async {
+    try {
+      final response = await _dio.put(
+        AppUrls.checkAllDailyPlansUrl(patientId),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode != 200) {
+        logger.e('Planlar onaylanırken hata: ${response.statusCode}');
+        return false;
+      }
+      logger.d('Planlar başarıyla onaylandı: patientId=$patientId');
+      return true;
+    } catch (e) {
+      logger.e('Planlar onaylanırken hata: $e');
+      return false;
+    }
   }
 
   /// Öğün güncelleme

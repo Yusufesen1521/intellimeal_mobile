@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intellimeal/nutritionist/screens/nutritionist_main_screen.dart';
 import 'package:intellimeal/screens/auth/signin/signin_screen.dart';
 import 'package:intellimeal/screens/auth/signup/signup_screen.dart';
+import 'package:intellimeal/screens/auth/verification/verification_screen.dart';
 import 'package:intellimeal/screens/home/ingredients_screen.dart';
 import 'package:intellimeal/screens/main/main_control_screen.dart';
 import 'package:intellimeal/screens/main/main_screen.dart';
@@ -33,6 +34,17 @@ final router = GoRouter(
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupScreen(),
+    ),
+    GoRoute(
+      path: '/verification',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return VerificationScreen(
+          email: extra['email']!,
+          userId: extra['userId']!,
+          token: extra['token']!,
+        );
+      },
     ),
     GoRoute(
       path: '/profile/get-meal-recommendation',

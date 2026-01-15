@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intellimeal/models/all_users_model.dart';
 import 'package:intellimeal/models/dailyPlan_model.dart';
 import 'package:intellimeal/services/nutritionist_service.dart';
+import 'package:intellimeal/services/websocket_instance.dart';
 import 'package:logger/logger.dart';
 
 /// Diyetisyen için hasta yönetimi controller'ı
@@ -23,6 +25,25 @@ class NutritionistController extends GetxController {
   void onInit() {
     super.onInit();
     fetchAllPatients();
+    _connectWebSocket();
+  }
+
+  /// DOCTOR olarak WebSocket bağlantısı kur
+  void _connectWebSocket() {
+    final storage = GetStorage();
+    final doctorId = storage.read('userId') ?? '';
+    if (doctorId.isNotEmpty) {
+      WebSocketInstance().connect(userId: doctorId, role: 'DOCTOR');
+      logger.d('DOCTOR WebSocket bağlantısı başlatıldı: doctorId=$doctorId');
+
+      // User generated plan mesajı geldiğinde hasta listesini yenile (DOCTOR için)
+      WebSocketInstance().onUserGeneratedPlan.listen((userId) {
+        logger.d('WebSocket: Yeni plan mesajı alındı (userId: $userId), hasta listesi yenileniyor');
+        refreshPatients();
+      });
+    } else {
+      logger.w('DOCTOR WebSocket bağlantısı kurulamadı: userId bulunamadı');
+    }
   }
 
   /// Tüm hastaları API'den çeker
@@ -83,9 +104,8 @@ class NutritionistController extends GetxController {
     }
   }
 
-  /// Plan onaylama - TODO: API bağlantısı eklenecek
+  /// Plan onaylama
   Future<bool> approvePlan(String patientId) async {
-    // TODO: Backend API'si hazır olduğunda implementasyon yapılacak
-    return await _nutritionistService.approvePlan(patientId);
+    return await _nutritionistService.checkAllDailyPlans(patientId);
   }
 }

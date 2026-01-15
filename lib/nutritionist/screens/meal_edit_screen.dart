@@ -117,9 +117,11 @@ class _MealEditScreenState extends State<MealEditScreen> {
     );
   }
 
-  void _saveChanges() {
+  void _saveChanges() async {
     final updatedMeal = _buildUpdatedMeal();
-    NutritionistService().updateMeal(widget.patientId, widget.day, widget.mealType, updatedMeal);
+    await NutritionistService().updateMeal(widget.patientId, widget.day, widget.mealType, updatedMeal);
+    logger.d('Öğün kaydedildi: ${updatedMeal.mealName}');
+
     Navigator.pop(context, updatedMeal);
   }
 
