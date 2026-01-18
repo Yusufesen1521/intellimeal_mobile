@@ -151,57 +151,51 @@ class _GetMealRecommendationState extends State<GetMealRecommendation> {
                       AppButton(
                         onPressed: () async {
                           _isLoading.value = true;
-                          // await UserService()
-                          //     .updatePersonalInfo(
-                          //       userController.user.value.id!,
-                          //       userController.token,
-                          //       userController.user.value.personalInfo!.last.id!,
-                          //       userController.user.value.personalInfo!.last.age!.toString(),
-                          //       userController.user.value.personalInfo!.last.weight!.toString(),
-                          //       _goalWeightController.text,
-                          //       userController.user.value.personalInfo!.last.height!.toString(),
-                          //       userController.user.value.personalInfo!.last.gender!.toString(),
-                          //       _activityLevel.isNotEmpty ? _activityLevel.first : '',
-                          //       _eatingHabits.join(','),
-                          //       _goals.isNotEmpty ? _goals.first : '',
-                          //       _diseases.join(','),
-                          //       _allergies.join(','),
-                          //       userController.user.value.personalInfo!.last.neckSize!.toString(),
-                          //       userController.user.value.personalInfo!.last.waistSize!.toString(),
-                          //       userController.user.value.personalInfo!.last.hipSize!.toString(),
-                          //       userController.user.value.personalInfo!.last.chestSize!.toString(),
-                          //       userController.user.value.personalInfo!.last.armSize!.toString(),
-                          //       userController.user.value.personalInfo!.last.legSize!.toString(),
-                          //     )
-                          //     .then((value) {
-                          //       if (value) {
-                          //         UserService()
-                          //             .getMealRecommendation(
-                          //               userController.user.value.id!,
-                          //               userController.token,
-                          //             )
-                          //             .then((value) {
-                          //               if (value.dailyPlans!.isNotEmpty) {
-                          //                 WebSocketInstance().sendGenerated();
-                          //                 userController.dailyPlanList.value = value.dailyPlans!;
-                          //                 _isLoading.value = false;
-                          //                 context.go('/main');
-                          //               } else {
-                          //                 ScaffoldMessenger.of(context).showSnackBar(
-                          //                   SnackBar(content: Text('Öğün önerisi alınamadı')),
-                          //                 );
-                          //                 print(value);
-                          //                 _isLoading.value = false;
-                          //               }
-                          //             });
-                          //       }
-                          //     });
-
-                          Future.delayed(const Duration(seconds: 3), () {
-                            WebSocketInstance().sendGenerated();
-                            _isLoading.value = false;
-                            context.go('/main');
-                          });
+                          await UserService()
+                              .updatePersonalInfo(
+                                userController.user.value.id!,
+                                userController.token,
+                                userController.user.value.personalInfo!.last.id!,
+                                userController.user.value.personalInfo!.last.age!.toString(),
+                                userController.user.value.personalInfo!.last.weight!.toString(),
+                                _goalWeightController.text,
+                                userController.user.value.personalInfo!.last.height!.toString(),
+                                userController.user.value.personalInfo!.last.gender!.toString(),
+                                _activityLevel.isNotEmpty ? _activityLevel.first : '',
+                                _eatingHabits.join(','),
+                                _goals.isNotEmpty ? _goals.first : '',
+                                _diseases.join(','),
+                                _allergies.join(','),
+                                userController.user.value.personalInfo!.last.neckSize!.toString(),
+                                userController.user.value.personalInfo!.last.waistSize!.toString(),
+                                userController.user.value.personalInfo!.last.hipSize!.toString(),
+                                userController.user.value.personalInfo!.last.chestSize!.toString(),
+                                userController.user.value.personalInfo!.last.armSize!.toString(),
+                                userController.user.value.personalInfo!.last.legSize!.toString(),
+                              )
+                              .then((value) {
+                                if (value) {
+                                  UserService()
+                                      .getMealRecommendation(
+                                        userController.user.value.id!,
+                                        userController.token,
+                                      )
+                                      .then((value) {
+                                        if (value.dailyPlans!.isNotEmpty) {
+                                          WebSocketInstance().sendGenerated();
+                                          userController.dailyPlanList.value = value.dailyPlans!;
+                                          _isLoading.value = false;
+                                          context.go('/main');
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Öğün önerisi alınamadı')),
+                                          );
+                                          print(value);
+                                          _isLoading.value = false;
+                                        }
+                                      });
+                                }
+                              });
                         },
                         backgroundColor: AppColors.appGreen,
                         foregroundColor: AppColors.appWhite,
